@@ -1,14 +1,12 @@
 var express = require('express');
 var router = express.Router();
-
+var customerRouter = require('./customer');
 /* GET home page. */
+// /api/
 router.get('/', function(req, res, next) {
-  res.render('index');
+  res.send('index');
 });
-router.post('/customer', function(req, res, next) {
-  console.log(req);
-  res.render('customer');
-});
+router.use('/customer',customerRouter);
 
 
 module.exports = router;
