@@ -16,4 +16,13 @@ function sidebarEventBind(){
             }    
         });
     });
+    $("#sidebar_product").click(function(){
+        $.ajax({ 
+            type: 'post' , 
+            url: '/product' , 
+            success: function(data) { 
+                $("#content").html(data); 
+            }    
+        });
+    });
 }

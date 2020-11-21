@@ -1,21 +1,29 @@
-<script src="js/custom/customer.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+<script src="js/custom/customer.js"></script>
+
 <!-- Begin Page Content -->
  <div class="container-fluid">
     <div class="row mb-4">
-        <div class="col">
-            <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#customerModal">+ 고객 추가</button>
+        <div class="col-3">
+            <button type="button" id="btnNewCustomer" class="btn btn-primary">+ 고객 추가</button>
         </div>
+        <div class="input-group col-9">
+          <input type="text" class="form-control" placeholder="검색" id="inputSearchCustomer">
+          <div class="input-group-append">
+              <button class="btn btn-primary" type="button" id="btnSearchCustomer">
+                  <i class="fas fa-search fa-sm"></i>
+              </button>
+          </div>
+      </div>
     </div>
     <div class="card shadow mb-4">
-       
         <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">고객 리스트</h6>
             
         </div>
 
         <div class="card-body">
-            <div class="table-responsive">
+            <div class="table-responsive table-hover">
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
@@ -27,16 +35,7 @@
                             <th>방문</th>
                         </tr>
                     </thead>
-                    <tfoot>
-                        <tr>
-                            <th>이름</th>
-                            <th>전화번호</th>
-                            <th>주소</th>
-                            <th>등급</th>
-                            <th>포인트</th>
-                            <th>방문</th>
-                        </tr>
-                    </tfoot>
+                  
                     <tbody id="tbCustomerList">
 
                     </tbody>
@@ -44,7 +43,7 @@
             </div>
         </div>
 
-        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="modalCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" customerId="">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
@@ -56,15 +55,16 @@
                 <div class="modal-body">
                   <form>
                     <div class="form-group">
-                      <label for="recipient-name" class="col-form-label">이름</label>
-                      <input type="text" class="form-control" id="inputCustomerName">
+                        <label class="col-form-label">이름</label>
+                        <input type="text" class="form-control" id="inputCustomerName">
                     </div>
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">전화번호</label>
+                        <label class="col-form-label">전화번호</label>
                         <input type="text" class="form-control" id="inputCustomerPhone">
+                        
                     </div>
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">주소</label>
+                        <label class="col-form-label">주소</label>
                         <input type="text" class="form-control" id="inputCustomerAddress">
                     </div>
                     <div class="form-group">
@@ -78,11 +78,18 @@
                         </select>
                       </div>
                     <div class="form-group">
-                        <label for="recipient-name" class="col-form-label">포인트</label>
-                        <input type="text" class="form-control" id="inputCustomerPoint">
+                        <label class="col-form-label">포인트</label>
+                        <div class="input-group mb-2">
+
+                          <div class="input-group-prepend">
+                            <div class="input-group-text">&#8361;</div>
+                          </div>
+                          <input type="text" class="form-control" id="inputCustomerPoint">
+                        </div>
+                        
                     </div>
                     <div class="form-group">
-                      <label for="message-text" class="col-form-label">메모</label>
+                      <label class="col-form-label">메모</label>
                       <textarea class="form-control" id="inputCustomerMemo"></textarea>
                     </div>
                   </form>
@@ -104,7 +111,7 @@
 
 <script id="tbCustomerList-template" type="text/x-handlebars-template">
     {{#customerList}}
-    <tr>
+    <tr customerId='{{id}}'>
         <td>{{name}}</td>
         <td>{{phone}}</td>
         <td>{{address}}</td>

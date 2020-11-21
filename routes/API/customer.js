@@ -24,12 +24,39 @@ var customerList=[
     memo:"def"
   }
 ]
-
+//전화번호, 이름으로 검색
+function fnSearchCustomer(keyword){
+  var resultList=[];
+  for(var i=0;i<customerList.length;++i){
+    console.log(i);
+    if(customerList[i].name.indexOf(keyword)!==-1 || customerList[i].phone.indexOf(keyword)!==-1 ){
+      resultList.push(customerList[i]);
+    }
+  }
+  return resultList;
+}
 // /api/customer
 // GET 
 // 리스트
 router.get('/', (req, res, next) =>{
-  res.send(customerList);
+  var keyword=req.query.keyword;
+  if(keyword){
+    var resultList;
+    resultList=fnSearchCustomer(keyword);
+    res.send(resultList);
+    
+  }
+  else{
+    res.send(customerList);
+  }
+  
+});
+
+// id로 조회
+router.get("/:id", (req, res) => {
+  const customer = customerList.find(c => c.id === parseInt(req.params.id));
+  if (!customer) res.status(404).send('ID was not found');
+  res.send(customer);
 });
 
 router.post('/', (req, res, next) =>{
@@ -40,23 +67,38 @@ router.post('/', (req, res, next) =>{
     address:req.body.address,
     vip:req.body.vip,
     point:req.body.point,
-    lastVisit:-1,
+    //lastVisit:-1,
     memo:req.body.memo,
 
   }
+
   customerList.push(customer);
 
   
   res.send(customer);
 });
 
+router.put("/:id", (req, res) => {
+  var customer;
+  for(var i=0;i<customerList.length;++i){
 
-// id로 조회
-/*
-app.get("/api/courses/:id", (req, res) => {
-  const course = courses.find(c => c.id === parseInt(req.params.id));
-  if (!course) res.status(404).send(`ID was not found`);
-  res.send(course);
+    if(customerList[i].id==parseInt(req.params.id)){
+      customer=customerList[i];
+      break;
+    }
+    
+  }
+  if(customer){     
+    customer.name=req.body.name;
+    customer.phone=req.body.phone;
+    customer.address=req.body.address;
+    customer.vip=req.body.vip;
+    customer.point=req.body.point;
+    customer.memo=req.body.memo;
+    res.send(customer);
+  }else{
+    res.status(404).send('ID was not found');
+  }    
 });
-*/
+
 module.exports = router;
