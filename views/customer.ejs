@@ -1,9 +1,10 @@
 <script src="js/custom/customer.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
 <!-- Begin Page Content -->
  <div class="container-fluid">
     <div class="row mb-4">
         <div class="col">
-            <button type="button" id="btnNewCustomer" class="btn btn-primary">+ 고객 추가</button>
+            <button type="button" class="btn btn-primary"  data-toggle="modal" data-target="#customerModal">+ 고객 추가</button>
         </div>
     </div>
     <div class="card shadow mb-4">
@@ -18,31 +19,98 @@
                 <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                     <thead>
                         <tr>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
+                            <th>이름</th>
+                            <th>전화번호</th>
+                            <th>주소</th>
+                            <th>등급</th>
+                            <th>포인트</th>
+                            <th>방문</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th>Name</th>
-                            <th>Position</th>
-                            <th>Office</th>
-                            <th>Age</th>
-                            <th>Start date</th>
-                            <th>Salary</th>
+                            <th>이름</th>
+                            <th>전화번호</th>
+                            <th>주소</th>
+                            <th>등급</th>
+                            <th>포인트</th>
+                            <th>방문</th>
                         </tr>
                     </tfoot>
                     <tbody id="tbCustomerList">
-                        
+
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <div class="modal fade" id="customerModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">고객 추가</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">이름</label>
+                      <input type="text" class="form-control" id="inputCustomerName">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">전화번호</label>
+                        <input type="text" class="form-control" id="inputCustomerPhone">
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">주소</label>
+                        <input type="text" class="form-control" id="inputCustomerAddress">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputCustomerName">등급</label>
+                        <select class="form-control" id="inputCustomerClass">
+                          <option>없음</option>
+                          <option>SILVER</option>
+                          <option>GOLD</option>
+                          <option>VIP</option>
+                          
+                        </select>
+                      </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">포인트</label>
+                        <input type="text" class="form-control" id="inputCustomerPoint">
+                    </div>
+                    <div class="form-group">
+                      <label for="message-text" class="col-form-label">메모</label>
+                      <textarea class="form-control" id="inputCustomerMemo"></textarea>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                  <button type="button" id="btnSaveCustomer" class="btn btn-primary">저장</button>
+                </div>
+              </div>
+            </div>
+        </div>
+
     </div>
 
+
 </div>
+
 <!-- /.container-fluid -->
+
+<script id="tbCustomerList-template" type="text/x-handlebars-template">
+    {{#customerList}}
+    <tr>
+        <td>{{name}}</td>
+        <td>{{phone}}</td>
+        <td>{{address}}</td>
+        <td>{{vip}}</td>
+        <td>{{point}}</td>
+        <td>{{lastVisit}}</td>
+     </tr>
+     {{/customerList}}
+</script>

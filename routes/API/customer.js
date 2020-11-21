@@ -1,3 +1,4 @@
+//참조: https://velog.io/@smooth97/Node.js-Restful-API-wok2wqo7yu
 //고객 관련 api (ajax호출용), URL : /customer
 var express = require('express');
 var router = express.Router();
@@ -9,7 +10,8 @@ var customerList=[
     address:"3단지",
     vip:"SILVER",
     point:"5126412",
-    lastVisit:521123
+    lastVisit:521123,
+    memo:"abc"
   },
   {
     id:2,
@@ -18,7 +20,8 @@ var customerList=[
     address:"2단지",
     vip:"GOLD",
     point:"5125126412",
-    lastVisit:612125
+    lastVisit:612125,
+    memo:"def"
   }
 ]
 
@@ -28,6 +31,25 @@ var customerList=[
 router.get('/', (req, res, next) =>{
   res.send(customerList);
 });
+
+router.post('/', (req, res, next) =>{
+  var customer={
+    id:customerList.length+1,
+    name:req.body.name,
+    phone:req.body.phone,
+    address:req.body.address,
+    vip:req.body.vip,
+    point:req.body.point,
+    lastVisit:-1,
+    memo:req.body.memo,
+
+  }
+  customerList.push(customer);
+
+  
+  res.send(customer);
+});
+
 
 // id로 조회
 /*
