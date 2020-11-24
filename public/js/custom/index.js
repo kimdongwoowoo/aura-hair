@@ -25,4 +25,13 @@ function sidebarEventBind(){
             }    
         });
     });
+    $("#sidebar_sales").click(function(){
+        $.ajax({ 
+            type: 'post' , 
+            url: '/sales' , 
+            success: function(data) { 
+                $("#content").html(data); 
+            }    
+        });
+    });
 }

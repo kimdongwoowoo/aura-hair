@@ -13,6 +13,9 @@ router.post('/customer', function(req, res, next) {
 router.post('/product', function(req, res, next) {
   res.render('product');
 });
+router.post('/sales', function(req, res, next) {
+  res.render('sales');
+});
 
 
 module.exports = router;

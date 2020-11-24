@@ -1,0 +1,206 @@
+<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+<script src="js/custom/sales.js"></script>
+
+<!-- Begin Page Content -->
+<div class="container-fluid">
+  <div class="row mb-4">
+    <div class="col-3">
+      <button type="button" id="btnNewSales" class="btn btn-primary">+ 고객 추가</button>
+    </div>
+    <div class="input-group col-9">
+      <input type="text" class="form-control" placeholder="검색" id="inputSearchSales">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" id="btnSearchSales">
+          <i class="fas fa-search fa-sm"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">고객 리스트</h6>
+
+    </div>
+
+    <div class="card-body">
+      <div class="table-responsive table-hover">
+        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+          <thead>
+            <tr>
+              <th>이름</th>
+              <th>전화번호</th>
+              <th>주소</th>
+              <th>등급</th>
+              <th>포인트</th>
+              <th>방문</th>
+            </tr>
+          </thead>
+
+          <tbody id="tbSalesList">
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="modal fade" id="modalSales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true" salesId="">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">장부 추가</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body border-bottom">
+            <form>
+              <div class="form-group row">
+                <div class="col-3">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                      value="option1">
+                    <label class="form-check-label" for="inlineRadio1">회원</label>
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                      value="option1">
+                    <label class="form-check-label" for="inlineRadio1">비회원</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="" id="divUserSearch">
+
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control" placeholder="검색" id="">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="">
+                      <i class="fas fa-search fa-sm"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <select multiple class="form-control" id="exampleFormControlSelect2">
+                    <option>검색 결과가 없습니다.</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+
+
+          </div>
+          <div class="modal-body border-bottom">
+            <form>
+              <div class="form-group row">
+                <div class="col-3">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                      value="option1">
+                    <label class="form-check-label" for="inlineRadio1">제품검색</label>
+
+                  </div>
+                </div>
+                <div class="col-3">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                      value="option1">
+                    <label class="form-check-label" for="inlineRadio1">직접입력</label>
+                  </div>
+                </div>
+              </div>
+              <div id="divProductSearch">
+
+                <div class="input-group mb-2">
+                  <input type="text" class="form-control" placeholder="검색" id="">
+                  <div class="input-group-append">
+                    <button class="btn btn-primary" type="button" id="">
+                      <i class="fas fa-search fa-sm"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <select multiple class="form-control" id="exampleFormControlSelect2">
+                    <option>검색 결과가 없습니다.</option>
+                  </select>
+                </div>
+                <div class="form-group row">
+                  <label for="price" class="col-auto col-form-label">상품가격</label>
+                  <div>
+                    <input type="number" class="form-control" id="price" placeholder="123">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-body border-bottom">
+            <form>
+             
+              <div class="form-group row">
+                
+                <div class="col-4">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                      value="option1">
+                    <label class="form-check-label" for="inlineRadio1">퍼센트할인</label>
+                  
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                      value="option1">
+                    <label class="form-check-label" for="inlineRadio1">지정금액할인</label>
+                    
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row">
+                <label for="price" class="col-auto col-form-label">---------</label>
+                <div>
+                  <input type="number" class="form-control" id="price" placeholder="123">
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-body border-bottom">
+            <form>
+              <div class="form-group row">
+                <label for="price" class="col-auto col-form-label col-auto">총액</label>
+                <div>
+                  <input type="number" class="form-control" id="price" placeholder="123">
+                </div>
+              </div>
+            </form>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            <button type="button" id="btnSaveSales" class="btn btn-primary">저장</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+
+</div>
+
+<!-- /.container-fluid -->
+
+<script id="tbSalesList-template" type="text/x-handlebars-template">
+    {{#salesList}}
+    <tr salesId='{{id}}'>
+        <td>{{name}}</td>
+        <td>{{phone}}</td>
+        <td>{{address}}</td>
+        <td>{{vip}}</td>
+        <td>{{point}}</td>
+        <td>{{lastVisit}}</td>
+     </tr>
+     {{/salesList}}
+</script>
