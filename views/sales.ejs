@@ -5,7 +5,7 @@
 <div class="container-fluid">
   <div class="row mb-4">
     <div class="col-3">
-      <button type="button" id="btnNewSales" class="btn btn-primary">+ 고객 추가</button>
+      <button type="button" id="btnNewSales" class="btn btn-primary">+ 장부 추가</button>
     </div>
     <div class="input-group col-9">
       <input type="text" class="form-control" placeholder="검색" id="inputSearchSales">
@@ -18,7 +18,7 @@
   </div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
-      <h6 class="m-0 font-weight-bold text-primary">고객 리스트</h6>
+      <h6 class="m-0 font-weight-bold text-primary">장부 리스트</h6>
 
     </div>
 
@@ -29,10 +29,8 @@
             <tr>
               <th>이름</th>
               <th>전화번호</th>
-              <th>주소</th>
-              <th>등급</th>
-              <th>포인트</th>
-              <th>방문</th>
+              <th>금액</th>
+              <th>날짜</th>
             </tr>
           </thead>
 
@@ -46,7 +44,7 @@
     <div class="modal fade" id="modalSales" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true" salesId="">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content p-2">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">장부 추가</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -55,37 +53,37 @@
           </div>
 
           <div class="modal-body border-bottom">
-            <form>
-              <div class="form-group row">
-                <div class="col-3">
+            <form id="formSelectUser">
+              <div class="form-group row p-1">
+                <div class="col-auto">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                      value="option1">
+                    <input class="form-check-input" type="radio" name="userRadioOptions" id="radioUser"
+                       data-target="#divUserSearch" aria-expanded="true" aria-controls="divUserSearch">
                     <label class="form-check-label" for="inlineRadio1">회원</label>
                   </div>
                 </div>
-                <div class="col-3">
+                <div class="col-auto">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                      value="option1">
+                    <input class="form-check-input" type="radio" name="userRadioOptions" id="radioNoneUser">
                     <label class="form-check-label" for="inlineRadio1">비회원</label>
                   </div>
                 </div>
               </div>
 
-              <div class="" id="divUserSearch">
-
+              <div class="collapse show" id="divUserSearch">
                 <div class="input-group mb-2">
-                  <input type="text" class="form-control" placeholder="검색" id="">
+                  <input type="text" class="form-control" placeholder="검색" id="inputSearchCustomer">
                   <div class="input-group-append">
-                    <button class="btn btn-primary" type="button" id="">
+                    <button class="btn btn-primary" type="button" id="btnSearchCustomer">
                       <i class="fas fa-search fa-sm"></i>
                     </button>
                   </div>
                 </div>
                 <div class="form-group">
-                  <select multiple class="form-control" id="exampleFormControlSelect2">
+                  <select multiple class="form-control" id="selectCustomerList">
                     <option>검색 결과가 없습니다.</option>
+
+                  
                   </select>
                 </div>
               </div>
@@ -94,74 +92,103 @@
 
           </div>
           <div class="modal-body border-bottom">
-            <form>
-              <div class="form-group row">
-                <div class="col-3">
+            <form id="formSelectProduct">
+              <div class="form-group row p-1">
+                <div class="col-auto">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                      value="option1">
-                    <label class="form-check-label" for="inlineRadio1">제품검색</label>
+                    <input class="form-check-input" type="radio" name="productRadioOptions" id="radioProduct"
+                    data-target="#divProductSearch" aria-expanded="true" aria-controls="divProductSearch">
+                    <label class="form-check-label" for="">제품검색</label>
 
                   </div>
                 </div>
-                <div class="col-3">
+                <div class="col-auto">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
+                    <input class="form-check-input" type="radio" name="productRadioOptions" id="radioSelfPrice"
                       value="option1">
-                    <label class="form-check-label" for="inlineRadio1">직접입력</label>
+                    <label class="form-check-label" for="">직접입력</label>
                   </div>
                 </div>
               </div>
-              <div id="divProductSearch">
+              <div class="collapse show" id="divProductSearch">
 
                 <div class="input-group mb-2">
-                  <input type="text" class="form-control" placeholder="검색" id="">
+                  <input type="text" class="form-control" placeholder="검색" id="inputSearchProduct">
                   <div class="input-group-append">
-                    <button class="btn btn-primary" type="button" id="">
+                    <button class="btn btn-primary" type="button" id="btnSearchProduct">
                       <i class="fas fa-search fa-sm"></i>
                     </button>
                   </div>
                 </div>
                 <div class="form-group">
-                  <select multiple class="form-control" id="exampleFormControlSelect2">
+                  <select multiple class="form-control" id="selectProductList">
                     <option>검색 결과가 없습니다.</option>
+                     
                   </select>
-                </div>
-                <div class="form-group row">
-                  <label for="price" class="col-auto col-form-label">상품가격</label>
-                  <div>
-                    <input type="number" class="form-control" id="price" placeholder="123">
-                  </div>
                 </div>
               </div>
             </form>
           </div>
           <div class="modal-body border-bottom">
-            <form>
+            <div class="form-group row">
+              <label for="price" class="col-3 col-form-label">상품가격</label>
+              <div class="col-9 input-group">
+                <input type="number" class="form-control" id="inputPrice" placeholder="123">
+                <div class="input-group-append">
+                  <span class="input-group-text" id="basic-addon2">&#8361;</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-body border-bottom">
+            <form id="formSelectDiscount">
              
-              <div class="form-group row">
-                
-                <div class="col-4">
+              <div class="form-group row p-1">
+                <div class="col-auto">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                      value="option1">
-                    <label class="form-check-label" for="inlineRadio1">퍼센트할인</label>
+                    <input class="form-check-input" type="radio" name="discountRadioOptions" id="radioNoneDiscount" readonly>
+                    <label class="form-check-label" for="">할인없음</label>
                   
                   </div>
                 </div>
-                <div class="col-4">
+                <div class="col-auto">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="inlineRadioOptions" id="inlineRadio1"
-                      value="option1">
-                    <label class="form-check-label" for="inlineRadio1">지정금액할인</label>
+                    <input class="form-check-input" type="radio" name="discountRadioOptions" id="radioPercentDiscount">
+                    <label class="form-check-label" for="">퍼센트할인</label>
+                  
+                  </div>
+                </div>
+                <div class="col-auto">
+                  <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="discountRadioOptions" id="radioNumberDiscount">
+                    <label class="form-check-label" for="">지정금액할인</label>
                     
                   </div>
                 </div>
               </div>
               <div class="form-group row">
-                <label for="price" class="col-auto col-form-label">---------</label>
-                <div>
-                  <input type="number" class="form-control" id="price" placeholder="123">
+                <label for="price" class="col-3 col-form-label">할인</label>
+                <div class="col-9 input-group">
+                  <input type="number" class="form-control" id="inputDiscount" placeholder="0">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">%</span>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-body border-bottom">
+            <form id="formPoint">
+              <div class="form-group row">
+                <label for="price" class="col-3 col-form-label">포인트 사용</label>
+                <div class="col-4 pr-0">
+                  <input type="" class="form-control" id="inputPointUse" placeholder="0" readonly>
+                </div>
+                <div class="col-1">
+                  
+                </div>
+                <div class="col-4 pl-0">
+                  <input type="" class="form-control" id="inputPointTotal" placeholder="0" readonly>
                 </div>
               </div>
             </form>
@@ -169,14 +196,16 @@
           <div class="modal-body border-bottom">
             <form>
               <div class="form-group row">
-                <label for="price" class="col-auto col-form-label col-auto">총액</label>
-                <div>
-                  <input type="number" class="form-control" id="price" placeholder="123">
+                <label for="inputFee" class="col-form-label col-3">최종금액</label>
+                <div class="col-9 input-group">
+                  <input type="number" class="form-control" id="inputFee" placeholder="0" readonly>
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">&#8361;</span>
+                  </div>
                 </div>
               </div>
             </form>
           </div>
-
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
             <button type="button" id="btnSaveSales" class="btn btn-primary">저장</button>
@@ -193,14 +222,16 @@
 <!-- /.container-fluid -->
 
 <script id="tbSalesList-template" type="text/x-handlebars-template">
-    {{#salesList}}
-    <tr salesId='{{id}}'>
-        <td>{{name}}</td>
-        <td>{{phone}}</td>
-        <td>{{address}}</td>
-        <td>{{vip}}</td>
-        <td>{{point}}</td>
-        <td>{{lastVisit}}</td>
-     </tr>
-     {{/salesList}}
+
 </script>
+
+<script id="selectCustomerList-template" type="text/x-handlebars-template">
+  {{#customerList}}
+    <option data-point='{{point}}' data-vip='{{vip}}'>{{name}} ({{phone}}) </option>
+   {{/customerList}}
+</script>
+<script id="selectProductList-template" type="text/x-handlebars-template">
+  {{#productList}}
+    <option data-price='{{price}}'>{{name}} ({{price}}) </option>
+   {{/productList}}
+</script>  

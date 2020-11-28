@@ -1,3 +1,5 @@
+
+
 $(document).ready(function(){
     fnGetAllSalesList();
 });
@@ -47,11 +49,113 @@ function fnUpdateSales(sales){
         console.log(err);
     }
 }
+function fnModalEventBind(){
+    //회원검색 관련
+    $("#formSelectUser [id^=radio]").off().on('click',function(){
+        if($(this).attr('id')=="radioUser"){
+           
+            $('#divUserSearch').collapse('show');
+        }else if($(this).attr('id')=="radioNoneUser"){
+            $('#divUserSearch').collapse('hide');
+            fnDisableAndResetPoint();
+        }
+    });
+    function fnDisableAndResetPoint(){
+        $("#inputPointUse").attr("readonly",true);
+        $("#inputPointUse").val("0");
+        $("#inputPointTotal").val("0");
+        $("#inputPointTotal").trigger('input');
+    }
+
+    $("#btnSearchCustomer").off().on('click',function(){
+        var keyword=$("#inputSearchCustomer").val();
+        if(!keyword){
+            alert('검색어를 입력하세요');
+        }else{
+            fnSearchCustomer(keyword);
+        }
+    });
+    //제품관련
+    $("#formSelectProduct [id^=radio]").off().on('click',function(){
+        if($(this).attr('id')=="radioProduct"){
+            $("#divProductSearch").collapse('show');
+            $("#inputPrice").attr('readonly',true);
+        }else if($(this).attr('id')=="radioSelfPrice"){
+            $("#divProductSearch").collapse('hide');
+            $("#inputPrice").attr('readonly',false);
+            //$("inputPrice").val('0');
+        }
+    });
+  
+
+    $("#btnSearchProduct").off().on('click',function(){
+        var keyword=$("#inputSearchProduct").val();
+        if(!keyword){
+            alert('검색어를 입력하세요');
+        }else{
+            fnSearchProduct(keyword);
+        }
+    });
+    //할인관련
+
+    $("#formSelectDiscount [id^=radio]").off().on('click',function(){
+        //공통수행후 분기
+        $("#inputDiscount").val("0");
+        $("#inputDiscount").trigger('input');
+        if($(this).attr('id')=="radioNoneDiscount"){
+            $("#inputDiscount").attr("readonly",true);
+        }else if($(this).attr('id')=="radioPercentDiscount"){
+            $("#inputDiscount").attr("readonly",false);
+        }else if($(this).attr('id')=="radioNumberDiscount"){
+            $("#inputDiscount").attr("readonly",false);
+        }
+        
+    });
+    //상품가격 변경시
+    $("#inputPrice,#inputDiscount,#inputPointUse").on('input', function() {
+        fnCalculateFee();
+    });
+    
+
+    function fnCalculateFee(){
+        //가격, 할인, 포인트로 총액 계산
+        
+        const price=$("#inputPrice").val();
+        var fee=price;
+        
+        //할인 계산
+        const selectDiscountId=$("#formSelectDiscount [id^=radio]:checked").attr('id');
+        const discount=$("#inputDiscount").val();
+        if(selectDiscountId=="radioPercentDiscount"){
+            //할인율로 할인
+            fee=fee*(100-discount)*0.01;
+        }else if(selectDiscountId=="radioNumberDiscount"){
+            //절대금액 할인
+            fee=fee-discount;
+        }
+        //포인트 계산
+        const usePoint=$("#inputPointUse").val();
+        fee=fee-usePoint;
+        
+        $("#inputFee").val(fee);
+    }
+
+    fnInitModalForm(); //라디오버튼 등 form 초기화
+}
+function fnInitModalForm(){
+    $('.modal-body form')[0].reset(); //전체 form 리셋
+    $("#radioNoneUser").click();
+    $("#radioNoneDiscount").click();
+    $("#radioSelfPrice").click();
+}
 function fnEventBind(){
     $("#btnNewSales").off().on('click',function(){
-        $("#modalSales").attr('salesId',''); //신규고객은 modal에서 id삭제
-        $('.modal-body form')[0].reset(); //전체 form 리셋
+        $("#modalSales").attr('salesId',''); //신규등록은 modal에서 id삭제
+        
+        fnModalEventBind(); //modal 이벤트바인드
+        
         $("#modalSales").modal('toggle');
+        
     });
     $("#btnSaveSales").off().on('click',function(){
        var check=fnValidCheckSales();
@@ -90,6 +194,94 @@ function fnEventBind(){
         fnPopupModalSales(id);
     });
 
+
+}
+
+function fnSearchCustomer(keyword){
+    $.ajax({ 
+        url: "/api/customer",
+        method: "GET", 
+        dataType:"json",
+        data:{
+            keyword:keyword
+        },    
+        success:success,
+        fail:fail
+    });
+    function success(data){
+        fnRenderCustomerList(data);
+    }
+    function fail(err){
+        console.log(err);
+    }
+}
+function fnSearchProduct(keyword){
+    $.ajax({ 
+        url: "/api/product",
+        method: "GET", 
+        dataType:"json",
+        data:{
+            keyword:keyword
+        },    
+        success:success,
+        fail:fail
+    });
+    function success(data){
+        fnRenderProductList(data);
+    }
+    function fail(err){
+        console.log(err);
+    }
+}
+
+//렌더링후 이벤트바인드
+//순수 data만 갖고 렌더링
+function fnRenderCustomerList(data){
+    var source=$("#selectCustomerList-template").html();
+    var renderData={
+        'customerList':data
+    }
+    var template=Handlebars.compile(source);
+    var html=template(renderData);
+    $("#selectCustomerList").html(html);
+    fnSelectCustomerListEventBind();
+}
+
+//렌더링후 이벤트바인드
+//순수 data만 갖고 렌더링
+function fnRenderProductList(data){
+    var source=$("#selectProductList-template").html();
+    var renderData={
+        'productList':data
+    }
+    var template=Handlebars.compile(source);
+    var html=template(renderData);
+    $("#selectProductList").html(html);
+    fnSelectProductListEventBind();
+}
+function fnSelectCustomerListEventBind(){
+    $("#selectCustomerList option").off().on('dblclick',function(){
+        var point=$(this).data('point');
+        var vip=$(this).data('vip');
+        $("#radioPercentDiscount").click();
+        const vipPercent={
+            'SILVER':10,
+            'GOLD':15,
+            'VIP':20
+        }
+        $("#inputDiscount").val(vipPercent[vip]);
+        $("#inputPointUse").attr('readonly',false);
+        $("#inputPointUse").val('0');
+        $("#inputPointTotal").val(point);
+        
+    });
+
+}
+function fnSelectProductListEventBind(){
+    $("#selectProductList option").off().on('dblclick',function(){
+        $("#inputPrice").val($(this).data('price'));
+        $("#inputPrice").trigger('input');
+    });
 
 }
 function fnSearchSales(keyword){
