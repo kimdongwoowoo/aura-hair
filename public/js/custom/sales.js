@@ -50,13 +50,18 @@ function fnUpdateSales(sales){
     }
 }
 function fnModalEventBind(){
+    //원화 세팅
+    $("#inputPrice,#inputDiscount,#inputPointUse,#inputFee").number(true,0);
+
     //회원검색 관련
     $("#formSelectUser [id^=radio]").off().on('click',function(){
         if($(this).attr('id')=="radioUser"){
-           
             $('#divUserSearch').collapse('show');
+            $("#divPoint").collapse('show');
         }else if($(this).attr('id')=="radioNoneUser"){
             $('#divUserSearch').collapse('hide');
+            $("#divPoint").collapse('hide');
+            $("#radioNoneDiscount").click();
             fnDisableAndResetPoint();
         }
     });
@@ -64,7 +69,7 @@ function fnModalEventBind(){
         $("#inputPointUse").attr("readonly",true);
         $("#inputPointUse").val("0");
         $("#inputPointTotal").val("0");
-        $("#inputPointTotal").trigger('input');
+        $("#inputPointUse").trigger('input');
     }
 
     $("#btnSearchCustomer").off().on('click',function(){
@@ -106,13 +111,25 @@ function fnModalEventBind(){
             $("#inputDiscount").attr("readonly",true);
         }else if($(this).attr('id')=="radioPercentDiscount"){
             $("#inputDiscount").attr("readonly",false);
+            $("#appendPercent").text("%");
+            
         }else if($(this).attr('id')=="radioNumberDiscount"){
             $("#inputDiscount").attr("readonly",false);
+            $("#appendPercent").text("￦");
         }
         
     });
     //상품가격 변경시
     $("#inputPrice,#inputDiscount,#inputPointUse").on('input', function() {
+        if($(this).attr('id')=="inputDiscount"){
+            if($("#formSelectDiscount [id^=radio]:checked").attr('id')=="radioPercentDiscount"){
+                var val=$(this).val();
+                if(val<0)
+                    $(this).val(0);
+                if(val>100)
+                    $(this).val(100);
+            }
+        }
         fnCalculateFee();
     });
     
@@ -136,11 +153,19 @@ function fnModalEventBind(){
         //포인트 계산
         const usePoint=$("#inputPointUse").val();
         fee=fee-usePoint;
-        
         $("#inputFee").val(fee);
     }
-
+    $("#btnSaveSales").off().on('click',function(){
+        fnCheckSaveSales();
+    });
     fnInitModalForm(); //라디오버튼 등 form 초기화
+}
+function fnCheckSaveSales(){
+    const fee=$("#inputFee").val();
+    if(fee<0){
+        alert('최종금액을 확인하세요');
+        return;        
+    }
 }
 function fnInitModalForm(){
     $('.modal-body form')[0].reset(); //전체 form 리셋

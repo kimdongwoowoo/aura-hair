@@ -133,9 +133,9 @@
             <div class="form-group row">
               <label for="price" class="col-3 col-form-label">상품가격</label>
               <div class="col-9 input-group">
-                <input type="number" class="form-control" id="inputPrice" placeholder="123">
+                <input class="form-control" id="inputPrice" placeholder="0">
                 <div class="input-group-append">
-                  <span class="input-group-text" id="basic-addon2">&#8361;</span>
+                  <span class="input-group-text">￦</span>
                 </div>
               </div>
             </div>
@@ -169,26 +169,27 @@
               <div class="form-group row">
                 <label for="price" class="col-3 col-form-label">할인</label>
                 <div class="col-9 input-group">
-                  <input type="number" class="form-control" id="inputDiscount" placeholder="0">
+                  <input class="form-control" id="inputDiscount" placeholder="0">
                   <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">%</span>
+                    <span class="input-group-text" id="appendPercent">%</span>
                   </div>
                 </div>
+                
               </div>
             </form>
           </div>
-          <div class="modal-body border-bottom">
+          <div class="modal-body border-bottom collapse show" id="divPoint">
             <form id="formPoint">
               <div class="form-group row">
                 <label for="price" class="col-3 col-form-label">포인트 사용</label>
-                <div class="col-4 pr-0">
+                <div class="col-4">
                   <input type="" class="form-control" id="inputPointUse" placeholder="0" readonly>
                 </div>
-                <div class="col-1">
-                  
-                </div>
-                <div class="col-4 pl-0">
+                <div class="col input-group">
                   <input type="" class="form-control" id="inputPointTotal" placeholder="0" readonly>
+                  <div class="input-group-append">
+                    <span class="input-group-text">￦</span>
+                  </div>
                 </div>
               </div>
             </form>
@@ -198,9 +199,9 @@
               <div class="form-group row">
                 <label for="inputFee" class="col-form-label col-3">최종금액</label>
                 <div class="col-9 input-group">
-                  <input type="number" class="form-control" id="inputFee" placeholder="0" readonly>
+                  <input class="form-control" id="inputFee" placeholder="0" readonly>
                   <div class="input-group-append">
-                    <span class="input-group-text" id="basic-addon2">&#8361;</span>
+                    <span class="input-group-text">￦</span>
                   </div>
                 </div>
               </div>
