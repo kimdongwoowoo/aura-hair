@@ -51,7 +51,7 @@ function fnUpdateSales(sales){
 }
 function fnModalEventBind(){
     //원화 세팅
-    $("#inputPrice,#inputDiscount,#inputPointUse,#inputFee").number(true,0);
+    $("#inputPrice,#inputDiscount,#inputPointUse,#inputFee,#inputPointTotal").number(true,0);
 
     //회원검색 관련
     $("#formSelectUser [id^=radio]").off().on('click',function(){
@@ -295,8 +295,10 @@ function fnSelectCustomerListEventBind(){
             'VIP':20
         }
         $("#inputDiscount").val(vipPercent[vip]);
+        $("#inputDiscount").trigger('input');
         $("#inputPointUse").attr('readonly',false);
         $("#inputPointUse").val('0');
+        $("#inputPointUse").trigger('input');
         $("#inputPointTotal").val(point);
         
     });
