@@ -193,6 +193,30 @@ function fnCheckSaveSales(){
         alert('최종금액을 확인하세요');
         return;        
     }
+    fnSaveSales();
+}
+function fnSaveSales(){
+    var sale={
+        customerId:-1,
+        productId:-1,
+        price:0,
+        discountType:"none",
+        discountValue:0,
+        pointUse:0,
+        fee:0,
+        comment:""        
+    };
+    var customerType;
+    const customerTypeRadio=$("#formSelectUser [id^=radio]:checked").attr('id');
+    if(customerTypeRadio=="radioNoneUser"){
+        customerType="noneUser";
+    }else if(customerTypeRadio=="radioUser"){
+        customerType="user";
+    }
+    if(customerType=="user"){
+        sale.customerId=$("#selectCustomerList option:checked").data('customerId');
+    }
+
 }
 function fnInitModalForm(){
     $('.modal-body form')[0].reset(); //전체 form 리셋
