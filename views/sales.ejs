@@ -1,4 +1,3 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
 <script src="js/custom/sales.js"></script>
 
 <!-- Begin Page Content -->
@@ -7,14 +6,7 @@
     <div class="col-3">
       <button type="button" id="btnNewSales" class="btn btn-primary">+ 장부 추가</button>
     </div>
-    <div class="input-group col-9">
-      <input type="text" class="form-control" placeholder="검색" id="inputSearchSales">
-      <div class="input-group-append">
-        <button class="btn btn-primary" type="button" id="btnSearchSales">
-          <i class="fas fa-search fa-sm"></i>
-        </button>
-      </div>
-    </div>
+    
   </div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -24,7 +16,7 @@
 
     <div class="card-body">
       <div class="table-responsive table-hover">
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+        <table class="table table-bordered" id="tbSalesList" width="100%" cellspacing="0">
           <thead>
             <tr>
               <th>이름</th>
@@ -34,7 +26,7 @@
             </tr>
           </thead>
 
-          <tbody id="tbSalesList">
+          <tbody id="tbSalesListBody">
 
           </tbody>
         </table>
@@ -207,6 +199,14 @@
               </div>
             </form>
           </div>
+          <div class="modal-body border-bottom">
+            <form>
+              <div class="form-group">
+                <label class="col-form-label">메모</label>
+                <textarea class="form-control" id="inputCustomerMemo"></textarea>
+              </div>
+            </form>
+          </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
             <button type="button" id="btnSaveSales" class="btn btn-primary">저장</button>
@@ -228,7 +228,8 @@
 
 <script id="selectCustomerList-template" type="text/x-handlebars-template">
   {{#customerList}}
-    <option data-point='{{point}}' data-vip='{{vip}}'>{{name}} ({{phone}}) </option>
+    <option data-point='{{point}}' data-vip='{{vip}}'>{{name}} ({{phone}}) 등급 {{vip}}</option>
+
    {{/customerList}}
 </script>
 <script id="selectProductList-template" type="text/x-handlebars-template">

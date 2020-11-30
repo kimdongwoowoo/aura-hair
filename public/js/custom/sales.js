@@ -28,7 +28,34 @@ function fnRenderSalesList(data){
     }
     var template=Handlebars.compile(source);
     var html=template(renderData);
-    $("#tbSalesList").html(html);
+    $("#tbSalesListBody").html(html);
+    $('#tbSalesList').dataTable( {
+            "language": {
+            "decimal":        "",
+            "emptyTable":     "등록된 내용이 없습니다.",
+            "info":           "",
+            "infoEmpty":      "",
+            "infoFiltered":   "",
+            "infoPostFix":    "",
+            "thousands":      ",",
+            "lengthMenu":     "_MENU_",
+            "loadingRecords": "로드 중 ...",
+            "processing":     "처리 중 ...",
+            "search":         "검색:",
+            "zeroRecords":    "일치하는 내용이 없습니다.",
+            "paginate": {
+                "first":      "처음",
+                "last":       "마지막",
+                "next":       "다음",
+                "previous":   "이전"
+            },
+            "aria": {
+                "sortAscending":  ": 오름차순으로 정렬",
+                "sortDescending": ": 내림차순으로 정렬"
+            }
+        }
+         
+    });
     fnEventBind();
 }
 function fnUpdateSales(sales){
@@ -202,15 +229,6 @@ function fnEventBind(){
             }
            
        }
-    });
-
-    $("#btnSearchSales").off().on('click',function(){
-        var keyword=$("#inputSearchSales").val();
-        if(!keyword){
-            fnGetAllSalesList();
-        }else{
-            fnSearchSales(keyword);
-        }
     });
 
     //header, footer를 제외, salesId를 포함한 row

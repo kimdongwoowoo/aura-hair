@@ -1,4 +1,4 @@
-<script src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/4.7.6/handlebars.min.js"></script>
+
 <script src="js/custom/customer.js"></script>
 
 <!-- Begin Page Content -->
@@ -7,14 +7,6 @@
         <div class="col-3">
             <button type="button" id="btnNewCustomer" class="btn btn-primary">+ 고객 추가</button>
         </div>
-        <div class="input-group col-9">
-          <input type="text" class="form-control" placeholder="검색" id="inputSearchCustomer">
-          <div class="input-group-append">
-              <button class="btn btn-primary" type="button" id="btnSearchCustomer">
-                  <i class="fas fa-search fa-sm"></i>
-              </button>
-          </div>
-      </div>
     </div>
     <div class="card shadow mb-4">
         <div class="card-header py-3">
@@ -24,7 +16,7 @@
 
         <div class="card-body">
             <div class="table-responsive table-hover">
-                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                <table class="table table-bordered" id="tbCustomerList" width="100%" cellspacing="0">
                     <thead>
                         <tr>
                             <th>이름</th>
@@ -36,7 +28,7 @@
                         </tr>
                     </thead>
                   
-                    <tbody id="tbCustomerList">
+                    <tbody id="tbCustomerListBody">
 
                     </tbody>
                 </table>
