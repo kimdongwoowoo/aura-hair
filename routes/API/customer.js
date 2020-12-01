@@ -55,7 +55,7 @@ router.get('/', (req, res, next) =>{
 // id로 조회
 router.get("/:id", (req, res) => {
   const customer = customerList.find(c => c.id === parseInt(req.params.id));
-  if (!customer) res.status(404).send('ID was not found');
+  if (!customer) res.status(404).send('회원없음');
   res.send(customer);
 });
 

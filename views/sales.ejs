@@ -6,7 +6,7 @@
     <div class="col-3">
       <button type="button" id="btnNewSales" class="btn btn-primary">+ 장부 추가</button>
     </div>
-    
+
   </div>
   <div class="card shadow mb-4">
     <div class="card-header py-3">
@@ -50,7 +50,7 @@
                 <div class="col-auto">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="userRadioOptions" id="radioUser"
-                       data-target="#divUserSearch" aria-expanded="true" aria-controls="divUserSearch">
+                      data-target="#divUserSearch" aria-expanded="true" aria-controls="divUserSearch">
                     <label class="form-check-label" for="inlineRadio1">회원</label>
                   </div>
                 </div>
@@ -75,7 +75,7 @@
                   <select multiple class="form-control" id="selectCustomerList">
                     <option>검색 결과가 없습니다.</option>
 
-                  
+
                   </select>
                 </div>
               </div>
@@ -89,7 +89,7 @@
                 <div class="col-auto">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="productRadioOptions" id="radioProduct"
-                    data-target="#divProductSearch" aria-expanded="true" aria-controls="divProductSearch">
+                      data-target="#divProductSearch" aria-expanded="true" aria-controls="divProductSearch">
                     <label class="form-check-label" for="">제품검색</label>
 
                   </div>
@@ -115,7 +115,7 @@
                 <div class="form-group">
                   <select multiple class="form-control" id="selectProductList">
                     <option>검색 결과가 없습니다.</option>
-                     
+
                   </select>
                 </div>
               </div>
@@ -134,27 +134,28 @@
           </div>
           <div class="modal-body border-bottom">
             <form id="formSelectDiscount">
-             
+
               <div class="form-group row p-1">
                 <div class="col-auto">
                   <div class="form-check form-check-inline">
-                    <input class="form-check-input" type="radio" name="discountRadioOptions" id="radioNoneDiscount" readonly>
+                    <input class="form-check-input" type="radio" name="discountRadioOptions" id="radioNoneDiscount"
+                      readonly>
                     <label class="form-check-label" for="">할인없음</label>
-                  
+
                   </div>
                 </div>
                 <div class="col-auto">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="discountRadioOptions" id="radioPercentDiscount">
                     <label class="form-check-label" for="">퍼센트할인</label>
-                  
+
                   </div>
                 </div>
                 <div class="col-auto">
                   <div class="form-check form-check-inline">
                     <input class="form-check-input" type="radio" name="discountRadioOptions" id="radioNumberDiscount">
                     <label class="form-check-label" for="">지정금액할인</label>
-                    
+
                   </div>
                 </div>
               </div>
@@ -166,7 +167,7 @@
                     <span class="input-group-text" id="appendPercent">%</span>
                   </div>
                 </div>
-                
+
               </div>
             </form>
           </div>
@@ -203,7 +204,7 @@
             <form>
               <div class="form-group">
                 <label class="col-form-label">메모</label>
-                <textarea class="form-control" id="inputCustomerMemo"></textarea>
+                <textarea class="form-control" id="inputSalesMemo"></textarea>
               </div>
             </form>
           </div>
@@ -215,6 +216,50 @@
       </div>
     </div>
 
+
+    <div class="modal fade" id="modalReceipt" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+      aria-hidden="true" salesId="">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content p-2">
+          <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">영수증</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body border-bottom">
+            <table class="table table-sm table-hover">
+
+              <tbody>
+                <tr class="border-top-0">
+                  <td class="text-left" id="tdReceiptName">Mark</td>
+                  
+                
+                <tr>
+                  <td class="text-left">결제금액</td>
+                  <td class="text-right" id="tdReceiptFee">123</td>
+                </tr>
+                <tr>
+                  <td class="text-left">날짜</td>
+                  <td class="text-right" id="tdReceiptDate">2020-10-20</td>
+                </tr>
+                <tr>
+                  <td class="text-left">메모</td>
+                  <td class="text-right" id="tdReceiptMemo">없음</td>
+                </tr>
+              </tbody>
+            </table>
+
+          </div>
+      
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            <button type="button" id="btnSaveSales" class="btn btn-primary">저장</button>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 
 
@@ -223,7 +268,14 @@
 <!-- /.container-fluid -->
 
 <script id="tbSalesList-template" type="text/x-handlebars-template">
-
+    {{#salesList}}
+    <tr salesId='{{id}}'>
+        <td>{{customerName}}</td>
+        <td>{{phone}}</td>
+        <td>{{fee}}</td>
+        <td>{{date}}</td>
+     </tr>
+     {{/salesList}}
 </script>
 
 <script id="selectCustomerList-template" type="text/x-handlebars-template">
@@ -234,6 +286,6 @@
 </script>
 <script id="selectProductList-template" type="text/x-handlebars-template">
   {{#productList}}
-    <option data-price='{{price}}'>{{name}} ({{price}}) </option>
+    <option data-productId='{{id}}' data-price='{{price}}'>{{name}} ({{price}}) </option>
    {{/productList}}
-</script>  
+</script>

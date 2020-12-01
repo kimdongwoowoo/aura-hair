@@ -5,36 +5,42 @@ var router = express.Router();
 var salesList=[
   {
     id:1,
-    name:"김동우",
-    phone:"010-1212-1212",
-    address:"3단지",
-    vip:"SILVER",
-    point:"5126412",
-    lastVisit:521123,
-    memo:"abc"
+    customerId:1,
+    productId:-1,
+    price:25000,
+    discountType:0,
+    discountVal:0,
+    pointUse:10000,
+    fee:15000,
+    date:1606824386,
+    comment:"밥먹고감"    
   },
   {
     id:2,
-    name:"고객2",
-    phone:"010-4211-6666",
-    address:"2단지",
-    vip:"GOLD",
-    point:"5125126412",
-    lastVisit:612125,
-    memo:"def"
+    customerId:2,
+    productId:1,
+    price:55000,
+    discountType:1,
+    discountVal:10,
+    pointUse:10000,
+    fee:34000,
+    date:1605787586,
+    comment:""
+  },
+  {
+    id:3,
+    customerId:-1,
+    productId:2,
+    price:150000,
+    discountType:2,
+    discountVal:10000,
+    pointUse:0,
+    fee:140000,
+    date:1606824386,
+    comment:"과천부동산"
   }
 ]
-//전화번호, 이름으로 검색
-function fnSearchSales(keyword){
-  var resultList=[];
-  for(var i=0;i<salesList.length;++i){
-    console.log(i);
-    if(salesList[i].name.indexOf(keyword)!==-1 || salesList[i].phone.indexOf(keyword)!==-1 ){
-      resultList.push(salesList[i]);
-    }
-  }
-  return resultList;
-}
+
 // /api/sales
 // GET 
 // 리스트
@@ -52,23 +58,19 @@ router.get('/', (req, res, next) =>{
   
 });
 
-// id로 조회
-router.get("/:id", (req, res) => {
-  const sales = salesList.find(c => c.id === parseInt(req.params.id));
-  if (!sales) res.status(404).send('ID was not found');
-  res.send(sales);
-});
-
 router.post('/', (req, res, next) =>{
   var sales={
     id:salesList.length+1,
-    name:req.body.name,
-    phone:req.body.phone,
-    address:req.body.address,
-    vip:req.body.vip,
-    point:req.body.point,
-    //lastVisit:-1,
+    customerId:req.body.customerId,
+    productId:req.body.productId,
+    price:req.body.price,
+    discountType:req.body.discountType,
+    discountValue:req.body.discountValue,
+    pointUse:req.body.pointUse,
+    fee:req.body.fee,
+    date:req.body.date,
     memo:req.body.memo,
+    
 
   }
 
@@ -76,6 +78,16 @@ router.post('/', (req, res, next) =>{
 
   
   res.send(sales);
+});
+
+router.delete("/:id", (req, res) => {
+  for(var i=0;i<salesList.length;++i){
+
+    if(salesList[i].id==parseInt(req.params.id)){
+      salesList.splice(i, 1)
+      break;
+    }
+  }
 });
 
 router.put("/:id", (req, res) => {
@@ -88,17 +100,32 @@ router.put("/:id", (req, res) => {
     }
     
   }
-  if(sales){     
-    sales.name=req.body.name;
-    sales.phone=req.body.phone;
-    sales.address=req.body.address;
-    sales.vip=req.body.vip;
-    sales.point=req.body.point;
-    sales.memo=req.body.memo;
+  if(sales){
+    var updateSales={
+      id:sales.id, //업데이트할 sales id
+      customerId:req.body.customerId,
+      productId:req.body.productId,
+      price:req.body.price,
+      discountType:req.body.discountType,
+      discountValue:req.body.discountValue,
+      pointUse:req.body.pointUse,
+      fee:req.body.fee,
+      date:req.body.date,
+      memo:req.body.memo,
+      
+  
+    }
+    sales=updateSales;
     res.send(sales);
   }else{
     res.status(404).send('ID was not found');
   }    
+});
+// id로 조회
+router.get("/:id", (req, res) => {
+  const sales = salesList.find(c => c.id === parseInt(req.params.id));
+  if (!sales) res.status(404).send('ID was not found');
+  res.send(sales);
 });
 
 module.exports = router;

@@ -21,41 +21,72 @@ function fnGetAllSalesList(){
 
 //렌더링후 이벤트바인드
 //순수 data만 갖고 렌더링
-function fnRenderSalesList(data){
+async function fnRenderSalesList(data){
     var source=$("#tbSalesList-template").html();
+
+
+    var salesList=[];
+    for(var i=0;i<data.length;++i){
+
+        var sales={
+            id:data[i].id
+        };
+        if(data[i].customerId==-1){
+            sales.customerName="비회원";
+            sales.phone="";
+        }else{
+            await $.ajax({ 
+                url: "/api/customer/"+data[i].customerId,
+                method: "GET", 
+                dataType:"json",
+                success:function(data){
+                    sales.customerName=data.name;
+                    sales.phone=data.phone;
+                },
+                fail:function(err){
+                    console.log(err);
+                }
+            });
+        }
+        sales.fee=data[i].fee;
+        sales.date=data[i].date;
+        salesList.push(sales);
+    }
     var renderData={
-        salesList:data
+        "salesList":salesList
     }
     var template=Handlebars.compile(source);
     var html=template(renderData);
     $("#tbSalesListBody").html(html);
-    $('#tbSalesList').dataTable( {
+    if (!$.fn.dataTable.isDataTable('#tbSalesList')) {
+        $('#tbSalesList').dataTable({
             "language": {
-            "decimal":        "",
-            "emptyTable":     "등록된 내용이 없습니다.",
-            "info":           "",
-            "infoEmpty":      "",
-            "infoFiltered":   "",
-            "infoPostFix":    "",
-            "thousands":      ",",
-            "lengthMenu":     "_MENU_",
-            "loadingRecords": "로드 중 ...",
-            "processing":     "처리 중 ...",
-            "search":         "검색:",
-            "zeroRecords":    "일치하는 내용이 없습니다.",
-            "paginate": {
-                "first":      "처음",
-                "last":       "마지막",
-                "next":       "다음",
-                "previous":   "이전"
-            },
-            "aria": {
-                "sortAscending":  ": 오름차순으로 정렬",
-                "sortDescending": ": 내림차순으로 정렬"
+                "decimal": "",
+                "emptyTable": "등록된 내용이 없습니다.",
+                "info": "",
+                "infoEmpty": "",
+                "infoFiltered": "",
+                "infoPostFix": "",
+                "thousands": ",",
+                "lengthMenu": "_MENU_",
+                "loadingRecords": "로드 중 ...",
+                "processing": "처리 중 ...",
+                "search": "검색:",
+                "zeroRecords": "일치하는 내용이 없습니다.",
+                "paginate": {
+                    "first": "처음",
+                    "last": "마지막",
+                    "next": "다음",
+                    "previous": "이전"
+                },
+                "aria": {
+                    "sortAscending": ": 오름차순으로 정렬",
+                    "sortDescending": ": 내림차순으로 정렬"
+                }
             }
-        }
-         
-    });
+
+        });
+    }
     fnEventBind();
 }
 function fnUpdateSales(sales){
@@ -159,33 +190,33 @@ function fnModalEventBind(){
         }
         fnCalculateFee();
     });
-    
-
-    function fnCalculateFee(){
-        //가격, 할인, 포인트로 총액 계산
-        
-        const price=$("#inputPrice").val();
-        var fee=price;
-        
-        //할인 계산
-        const selectDiscountId=$("#formSelectDiscount [id^=radio]:checked").attr('id');
-        const discount=$("#inputDiscount").val();
-        if(selectDiscountId=="radioPercentDiscount"){
-            //할인율로 할인
-            fee=fee*(100-discount)*0.01;
-        }else if(selectDiscountId=="radioNumberDiscount"){
-            //절대금액 할인
-            fee=fee-discount;
-        }
-        //포인트 계산
-        const usePoint=$("#inputPointUse").val();
-        fee=fee-usePoint;
-        $("#inputFee").val(fee);
-    }
+    //저장
     $("#btnSaveSales").off().on('click',function(){
         fnCheckSaveSales();
     });
     fnInitModalForm(); //라디오버튼 등 form 초기화
+}
+
+function fnCalculateFee(){
+    //가격, 할인, 포인트로 총액 계산
+    
+    const price=$("#inputPrice").val();
+    var fee=price;
+    
+    //할인 계산
+    const selectDiscountId=$("#formSelectDiscount [id^=radio]:checked").attr('id');
+    const discount=$("#inputDiscount").val();
+    if(selectDiscountId=="radioPercentDiscount"){
+        //할인율로 할인
+        fee=fee*(100-discount)*0.01;
+    }else if(selectDiscountId=="radioNumberDiscount"){
+        //절대금액 할인
+        fee=fee-discount;
+    }
+    //포인트 계산
+    const usePoint=$("#inputPointUse").val();
+    fee=fee-usePoint;
+    $("#inputFee").val(fee);
 }
 function fnCheckSaveSales(){
     const fee=$("#inputFee").val();
@@ -193,30 +224,44 @@ function fnCheckSaveSales(){
         alert('최종금액을 확인하세요');
         return;        
     }
-    fnSaveSales();
+    fnMakeSales();
 }
-function fnSaveSales(){
+function fnMakeSales(){
     var sale={
         customerId:-1,
         productId:-1,
         price:0,
-        discountType:"none",
+        discountType:0,
         discountValue:0,
         pointUse:0,
         fee:0,
-        comment:""        
+        date:0,
+        memo:""        
     };
-    var customerType;
     const customerTypeRadio=$("#formSelectUser [id^=radio]:checked").attr('id');
-    if(customerTypeRadio=="radioNoneUser"){
-        customerType="noneUser";
-    }else if(customerTypeRadio=="radioUser"){
-        customerType="user";
+    if(customerTypeRadio=="radioUser"){
+        sale.customerId=$("#selectCustomerList option:checked").data('customerid');
     }
-    if(customerType=="user"){
-        sale.customerId=$("#selectCustomerList option:checked").data('customerId');
+    const productType=$("#formSelectProduct [id^=radio]:checked").attr('id');
+    if(productType=="radioProduct"){
+        sale.productId=$("#selectProductList option:checked").data('productid');
     }
-
+    sale.price=$("#inputPrice").val();
+    const discountType=$("#formSelectDiscount [id^=radio]:checked").attr('id');
+    if(discountType=="radioNoneDiscount"){
+        sale.discountType=0;
+    }else if(discountType=="radioPercentDiscount"){
+        sale.discountType=1;
+    }else if(discountType=="radioNumberDiscount"){
+        sale.discountType=2;
+    }
+    sale.discountValue=$("#inputDiscount").val();
+    sale.pointUse=$("#inputPointUse").val();
+    sale.fee=$("#inputFee").val();
+    //DatePicker 추가
+    sale.memo=$("#inputSalesMemo").val();
+    fnSaveNewSales(sale);
+    
 }
 function fnInitModalForm(){
     $('.modal-body form')[0].reset(); //전체 form 리셋
@@ -233,28 +278,6 @@ function fnEventBind(){
         $("#modalSales").modal('toggle');
         
     });
-    $("#btnSaveSales").off().on('click',function(){
-       var check=fnValidCheckSales();
-       if(check){
-            var sales={
-                name: $("#inputSalesName").val(),
-                phone:$("#inputSalesPhone").val(),
-                address:$("#inputSalesAddress").val(),
-                vip:$("#inputSalesClass").val(),
-                point:$("#inputSalesPoint").val(),
-                memo:$("#inputSalesMemo").val()
-            }
-
-            if($("#modalSales").attr('salesId')){
-                sales['id']=$("#modalSales").attr('salesId');
-                fnUpdateSales(sales);
-            }else{
-                fnSaveNewSales(sales);
-            }
-           
-       }
-    });
-
     //header, footer를 제외, salesId를 포함한 row
     $("tr[salesId]").off().on('dblclick',function(){
         var id=$(this).attr('salesId');
@@ -372,7 +395,8 @@ function fnSearchSales(keyword){
     }
 }
 function fnPopupModalSales(salesId){
-    $("#modalSales").attr('salesId',salesId);
+    $("#modalReceipt").attr('salesId',salesId);
+    
     $.ajax({ 
         url: "/api/sales/"+salesId,
         method: "GET", 
@@ -381,23 +405,15 @@ function fnPopupModalSales(salesId){
         fail:fail
     });
     function success(data){
-        //console.log(data);
-        $("#inputSalesName").val(data.name);
-        $("#inputSalesPhone").val(data.phone);
-        $("#inputSalesAddress").val(data.address);
-        $("#inputSalesClass").val(data.vip);
-        $("#inputSalesPoint").val(data.point);
-        $("#inputSalesMemo").val(data.memo);
         
-        $("#modalSales").modal('toggle');
+        $("#modalReceipt input").attr('disabled',true); //일단 다 비활성화
+        //메모,날짜만 활성화
+        //정책 : 환불, 수정등은 삭제후 재등록 
+        $("#modalReceipt").modal('toggle');
     }
     function fail(err){
         console.log(err);
     }
-
-    
-
-
 }
 //저장후 렌더링함수 호출
 function fnSaveNewSales(sales){
