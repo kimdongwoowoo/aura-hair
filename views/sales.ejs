@@ -219,7 +219,7 @@
 
     <div class="modal fade" id="modalReceipt" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
       aria-hidden="true" salesId="">
-      <div class="modal-dialog modal-sm" role="document">
+      <div class="modal-dialog" role="document">
         <div class="modal-content p-2">
           <div class="modal-header">
             <h5 class="modal-title" id="exampleModalLabel">영수증</h5>
@@ -227,31 +227,29 @@
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
-
-          <div class="modal-body border-bottom">
-            <table class="table table-sm table-hover">
+          
+            <table class="table table-hover">
 
               <tbody>
                 <tr class="border-top-0">
-                  <td class="text-left" id="tdReceiptName">Mark</td>
-                  
-                
+                  <td class="">이름</td>
+                  <td class="" id="tdReceiptName">김동우</td>
                 <tr>
-                  <td class="text-left">결제금액</td>
-                  <td class="text-right" id="tdReceiptFee">123</td>
+                  <td class="">결제금액</td>
+                  <td class="" id="tdReceiptFee">123</td>
                 </tr>
                 <tr>
-                  <td class="text-left">날짜</td>
-                  <td class="text-right" id="tdReceiptDate">2020-10-20</td>
+                  <td class="">날짜</td>
+                  <td class="" id="tdReceiptDate">2020-10-20</td>
                 </tr>
                 <tr>
-                  <td class="text-left">메모</td>
-                  <td class="text-right" id="tdReceiptMemo">없음</td>
+                  <td class="">메모</td>
+                  <td class="" id="tdReceiptMemo">없음</td>
                 </tr>
               </tbody>
             </table>
-
-          </div>
+        
+        
       
           <div class="modal-footer">
             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
@@ -270,8 +268,8 @@
 <script id="tbSalesList-template" type="text/x-handlebars-template">
     {{#salesList}}
     <tr salesId='{{id}}'>
-        <td>{{customerName}}</td>
-        <td>{{phone}}</td>
+        <td>{{customerInfo.name}}</td>
+        <td>{{customerInfo.phone}}</td>
         <td>{{fee}}</td>
         <td>{{date}}</td>
      </tr>
@@ -280,12 +278,12 @@
 
 <script id="selectCustomerList-template" type="text/x-handlebars-template">
   {{#customerList}}
-    <option data-customerId='{{id}}' data-point='{{point}}' data-vip='{{vip}}'>{{name}} ({{phone}}) 등급 {{vip}}</option>
+    <option data-customerid='{{id}}' data-customername='{{name}}' data-customerphone='{{phone}}' data-point='{{point}}' data-vip='{{vip}}'>{{name}} ({{phone}}) 등급 {{vip}}</option>
 
    {{/customerList}}
 </script>
 <script id="selectProductList-template" type="text/x-handlebars-template">
   {{#productList}}
-    <option data-productId='{{id}}' data-price='{{price}}'>{{name}} ({{price}}) </option>
+    <option data-productid='{{id}}' data-productname='{{name}}' data-price='{{price}}'>{{name}} ({{price}}) </option>
    {{/productList}}
 </script>

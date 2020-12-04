@@ -21,39 +21,10 @@ function fnGetAllSalesList(){
 
 //렌더링후 이벤트바인드
 //순수 data만 갖고 렌더링
-async function fnRenderSalesList(data){
+function fnRenderSalesList(data){
     var source=$("#tbSalesList-template").html();
-
-
-    var salesList=[];
-    for(var i=0;i<data.length;++i){
-
-        var sales={
-            id:data[i].id
-        };
-        if(data[i].customerId==-1){
-            sales.customerName="비회원";
-            sales.phone="";
-        }else{
-            await $.ajax({ 
-                url: "/api/customer/"+data[i].customerId,
-                method: "GET", 
-                dataType:"json",
-                success:function(data){
-                    sales.customerName=data.name;
-                    sales.phone=data.phone;
-                },
-                fail:function(err){
-                    console.log(err);
-                }
-            });
-        }
-        sales.fee=data[i].fee;
-        sales.date=data[i].date;
-        salesList.push(sales);
-    }
     var renderData={
-        "salesList":salesList
+        "salesList":data
     }
     var template=Handlebars.compile(source);
     var html=template(renderData);
@@ -228,8 +199,15 @@ function fnCheckSaveSales(){
 }
 function fnMakeSales(){
     var sale={
-        customerId:-1,
-        productId:-1,
+        customerInfo:{
+            id:-1,
+            name:"",
+            phone:"",            
+        },
+        productInfo:{
+            id:-1,
+            name:""
+        },        
         price:0,
         discountType:0,
         discountValue:0,
@@ -240,11 +218,18 @@ function fnMakeSales(){
     };
     const customerTypeRadio=$("#formSelectUser [id^=radio]:checked").attr('id');
     if(customerTypeRadio=="radioUser"){
-        sale.customerId=$("#selectCustomerList option:checked").data('customerid');
+        const option=$("#selectCustomerList option:checked");
+        sale.customerInfo.id=option.data('customerid');
+        sale.customerInfo.name=option.data('customername');
+        sale.customerInfo.phone=option.data('customerphone');
+    }else{
+        sale.customerInfo.name="비회원";
     }
     const productType=$("#formSelectProduct [id^=radio]:checked").attr('id');
     if(productType=="radioProduct"){
-        sale.productId=$("#selectProductList option:checked").data('productid');
+        const option=$("#selectProductList option:checked");
+        sale.productInfo.id=option.data('productid');
+        sale.productInfo.name=option.data('productname');
     }
     sale.price=$("#inputPrice").val();
     const discountType=$("#formSelectDiscount [id^=radio]:checked").attr('id');
@@ -272,9 +257,7 @@ function fnInitModalForm(){
 function fnEventBind(){
     $("#btnNewSales").off().on('click',function(){
         $("#modalSales").attr('salesId',''); //신규등록은 modal에서 id삭제
-        
         fnModalEventBind(); //modal 이벤트바인드
-        
         $("#modalSales").modal('toggle');
         
     });
@@ -407,6 +390,10 @@ function fnPopupModalSales(salesId){
     function success(data){
         
         $("#modalReceipt input").attr('disabled',true); //일단 다 비활성화
+        $("#tdReceiptName").text(data.customerInfo.name);
+        $("#tdReceiptFee").text('￦'+$.number(data.fee,0,','));
+        $("#tdReceiptDate").text(data.date);
+        $("#tdReceiptMemo").text(data.memo);
         //메모,날짜만 활성화
         //정책 : 환불, 수정등은 삭제후 재등록 
         $("#modalReceipt").modal('toggle');
@@ -421,8 +408,9 @@ function fnSaveNewSales(sales){
     $.ajax({ 
         url: "/api/sales",
         method: "POST",
-        data:sales,
+        data:JSON.stringify(sales),
         dataType: "json",
+        contentType:"application/json",
         success:success,
         fail:fail
     });

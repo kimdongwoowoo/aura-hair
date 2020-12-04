@@ -2,44 +2,8 @@
 //장부 관련 api (ajax호출용), URL : /sales
 var express = require('express');
 var router = express.Router();
-var salesList=[
-  {
-    id:1,
-    customerId:1,
-    productId:-1,
-    price:25000,
-    discountType:0,
-    discountVal:0,
-    pointUse:10000,
-    fee:15000,
-    date:1606824386,
-    comment:"밥먹고감"    
-  },
-  {
-    id:2,
-    customerId:2,
-    productId:1,
-    price:55000,
-    discountType:1,
-    discountVal:10,
-    pointUse:10000,
-    fee:34000,
-    date:1605787586,
-    comment:""
-  },
-  {
-    id:3,
-    customerId:-1,
-    productId:2,
-    price:150000,
-    discountType:2,
-    discountVal:10000,
-    pointUse:0,
-    fee:140000,
-    date:1606824386,
-    comment:"과천부동산"
-  }
-]
+var salesList=[];
+router.use(express.json());
 
 // /api/sales
 // GET 
@@ -59,25 +23,11 @@ router.get('/', (req, res, next) =>{
 });
 
 router.post('/', (req, res, next) =>{
-  var sales={
-    id:salesList.length+1,
-    customerId:req.body.customerId,
-    productId:req.body.productId,
-    price:req.body.price,
-    discountType:req.body.discountType,
-    discountValue:req.body.discountValue,
-    pointUse:req.body.pointUse,
-    fee:req.body.fee,
-    date:req.body.date,
-    memo:req.body.memo,
-    
-
-  }
-
-  salesList.push(sales);
-
-  
+  var sales=req.body;
+  sales.id=salesList.length+1;
+  salesList.push(sales);  
   res.send(sales);
+  
 });
 
 router.delete("/:id", (req, res) => {
@@ -92,10 +42,11 @@ router.delete("/:id", (req, res) => {
 
 router.put("/:id", (req, res) => {
   var sales;
+  var target;
   for(var i=0;i<salesList.length;++i){
 
     if(salesList[i].id==parseInt(req.params.id)){
-      sales=salesList[i];
+      target=salesList[i];
       break;
     }
     
