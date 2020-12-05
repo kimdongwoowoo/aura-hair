@@ -100,5 +100,16 @@ router.put("/:id", (req, res) => {
     res.status(404).send('ID was not found');
   }    
 });
+router.delete("/:id",(req,res)=>{
+  var customer;
+  for (var i = 0; i < customerList.length; ++i) {
+    if (customerList[i].id == parseInt(req.params.id)) {
+      customer = customerList[i];
+      customerList.splice(i, 1);
+      break;
+    }
+  }
+  res.send(customer);
+});
 
 module.exports = router;

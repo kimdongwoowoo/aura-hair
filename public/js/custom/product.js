@@ -20,10 +20,12 @@ function fnGetAllProductList(){
 //렌더링후 이벤트바인드
 //순수 data만 갖고 렌더링
 function fnRenderProductList(data){
-    //debugger;
     var source=$("#tbProductList-template").html();
     var renderData={
         productList:data
+    }
+    if ($.fn.dataTable.isDataTable('#tbProductList')){
+        $('#tbProductList').dataTable().fnDestroy();
     }
     var template=Handlebars.compile(source);
     var html=template(renderData);

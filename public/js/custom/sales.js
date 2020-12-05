@@ -114,10 +114,11 @@ function fnModalEventBind(){
         if($(this).attr('id')=="radioProduct"){
             $("#divProductSearch").collapse('show');
             $("#inputPrice").attr('readonly',true);
+            $("#inputPrice").val('0');
         }else if($(this).attr('id')=="radioSelfPrice"){
             $("#divProductSearch").collapse('hide');
             $("#inputPrice").attr('readonly',false);
-            //$("inputPrice").val('0');
+            $("#inputPrice").val('0');
         }
     });
   
@@ -195,6 +196,12 @@ function fnCheckSaveSales(){
         alert('최종금액을 확인하세요');
         return;        
     }
+    const date=$("#inputDate").val();
+    const time=$("#inputTime").val();
+    if(date=="" || time==""){
+        alert('방문 날짜/시간을 확인하세요');
+        return;        
+    }
     fnMakeSales();
 }
 function fnMakeSales(){
@@ -213,7 +220,8 @@ function fnMakeSales(){
         discountValue:0,
         pointUse:0,
         fee:0,
-        date:0,
+        date:"",
+        time:"",
         memo:""        
     };
     const customerTypeRadio=$("#formSelectUser [id^=radio]:checked").attr('id');
@@ -243,6 +251,8 @@ function fnMakeSales(){
     sale.discountValue=$("#inputDiscount").val();
     sale.pointUse=$("#inputPointUse").val();
     sale.fee=$("#inputFee").val();
+    sale.date=$("#inputDate").val();
+    sale.time=$("#inputTime").val();
     //DatePicker 추가
     sale.memo=$("#inputSalesMemo").val();
     fnSaveNewSales(sale);
@@ -390,9 +400,33 @@ function fnPopupModalSales(salesId){
     function success(data){
         
         $("#modalReceipt input").attr('disabled',true); //일단 다 비활성화
-        $("#tdReceiptName").text(data.customerInfo.name);
-        $("#tdReceiptFee").text('￦'+$.number(data.fee,0,','));
-        $("#tdReceiptDate").text(data.date);
+        $('[id^=trDetail]').collapse('hide');
+        var receiptName=data.customerInfo.name;
+        if(data.customerInfo.phone!="")
+            receiptName+="("+data.customerInfo.phone+")";
+        $("#tdReceiptName").text(receiptName);
+        $("#divReceiptFee").text('￦'+$.number(data.fee,0,','));
+        $("#tdPrice").text('￦'+$.number(data.price,0,','));
+        if(data.discountType==0)
+            $("#trDetailDiscount").remove();
+        else if(data.discountType==1){
+            $("#tdDiscount").text("-￦"+ $.number(data.price*data.discountValue*0.01,0,','));
+        }else if(data.discountType==2){
+            $("#tdDiscount").text("-￦"+ $.number(data.discountValue,0,','));
+        }
+
+        if(data.customerInfo.id==-1 || data.pointUse==0){
+            $("#trDetailPoint").remove();
+        }else{
+            $("#tdPoint").text("-￦"+$.number(data.pointUse,0,','));
+        }
+        $("#tdFee").text('￦'+$.number(data.fee,0,','));
+
+        
+        $("#aReceiptDetail").off().on('click',function(){
+            $('[id^=trDetail]').collapse('toggle');
+        });
+        $("#tdReceiptDate").text(data.date+" / "+data.time);
         $("#tdReceiptMemo").text(data.memo);
         //메모,날짜만 활성화
         //정책 : 환불, 수정등은 삭제후 재등록 
@@ -422,16 +456,4 @@ function fnSaveNewSales(sales){
         console.log(err);
     }
     
-}
-function fnValidCheckSales(){
-    var name=$("#inputSalesName").val();
-    var phone=$("#inputSalesPhone").val(); //입력양식만 검사, POST호출시 중복검사
-    //focus
-    var address=$("#inputSalesAddress").val();
-    var vip=$("#inputSalesClass").val();
-    var point=$("#inputSalesPoint").val();
-    var memo=$("#inputSalesMemo").val();
-    
-    //check 로직 추가
-    return true;
 }

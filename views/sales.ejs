@@ -22,7 +22,7 @@
               <th>이름</th>
               <th>전화번호</th>
               <th>금액</th>
-              <th>날짜</th>
+              <th>방문일</th>
             </tr>
           </thead>
 
@@ -202,6 +202,20 @@
           </div>
           <div class="modal-body border-bottom">
             <form>
+              <div class="form-group row">
+                <label for="inputFee" class="col-form-label col-3">시간</label>
+                <div class="col-5">
+                  <input type="date" class="form-control" id="inputDate" placeholder="Select time">
+                </div>
+                <div class="col-4">
+                  <input type="time" class="form-control" id="inputTime" placeholder="Select time">
+                </div>                
+              </div>
+              
+            </form>
+          </div>
+          <div class="modal-body border-bottom">
+            <form>
               <div class="form-group">
                 <label class="col-form-label">메모</label>
                 <textarea class="form-control" id="inputSalesMemo"></textarea>
@@ -232,19 +246,42 @@
 
               <tbody>
                 <tr class="border-top-0">
-                  <td class="">이름</td>
-                  <td class="" id="tdReceiptName">김동우</td>
-                <tr>
-                  <td class="">결제금액</td>
-                  <td class="" id="tdReceiptFee">123</td>
+                  <td class="text-left">이름</td>
+                  <td class="text-right" id="tdReceiptName">김동우</td>
                 </tr>
                 <tr>
-                  <td class="">날짜</td>
-                  <td class="" id="tdReceiptDate">2020-10-20</td>
+                  <td class="text-left">결제금액</td>
+                  <td class="text-right">
+                    <div class="row p-0 m-0">
+                      <div class="col" id="divReceiptFee"></div>
+                      <a class="" data-toggle="collapse" id="aReceiptDetail">상세내역</a>
+                    </div>
+                  </td>
+                </tr>
+                <tr id="trDetailPrice" class="collapse hide table-secondary">
+                  <td class="text-left">상품가격</td>
+                  <td class="text-right" id="tdPrice"></td>
+                </tr>
+                <tr id="trDetailDiscount" class="collapse hide table-secondary">
+                  <td class="text-left">할인</td>
+                  <td class="text-right" id="tdDiscount"></td>
+                </tr>
+                <tr id="trDetailPoint" class="collapse hide table-secondary">
+                  <td class="text-left">포인트 사용</td>
+                  <td class="text-right" id="tdPoint"></td>
+                </tr>
+                <tr id="trDetailFee" class="collapse hide table-secondary">
+                  <td class="text-left">최종금액</td>
+                  <td class="text-right" id="tdFee"></td>
+                </tr>
+              
+                <tr>
+                  <td class="text-left">방문일</td>
+                  <td class="text-right" id="tdReceiptDate">2020-10-20</td>
                 </tr>
                 <tr>
-                  <td class="">메모</td>
-                  <td class="" id="tdReceiptMemo">없음</td>
+                  <td class="text-left">메모</td>
+                  <td class="text-right" id="tdReceiptMemo">없음</td>
                 </tr>
               </tbody>
             </table>
@@ -271,7 +308,7 @@
         <td>{{customerInfo.name}}</td>
         <td>{{customerInfo.phone}}</td>
         <td>{{fee}}</td>
-        <td>{{date}}</td>
+        <td>{{date}} / {{time}}</td>
      </tr>
      {{/salesList}}
 </script>
