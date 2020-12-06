@@ -30,6 +30,10 @@ function fnRenderProductList(data){
     var template=Handlebars.compile(source);
     var html=template(renderData);
     $("#tbProductListBody").html(html);
+    $("[id=tdbProductListPrice]").each((idx,td)=>{
+        $(td).text('￦'+$.number($(td).text(),0,','));
+    });
+    
     $('#tbProductList').dataTable({
         "language": {
             "decimal": "",
@@ -78,10 +82,12 @@ function fnUpdateProduct(product){
     }
 }
 function fnEventBind(){
+    $("#inputProductPrice").number(true,0);
     $("#btnNewProduct").off().on('click',function(){
         $("#modalProduct").attr('productId',''); //신규고객은 modal에서 id삭제
         $('.modal-body form')[0].reset(); //전체 form 리셋
         $("#modalProduct").modal('toggle');
+        $("#btnDelProduct").hide();
     });
     $("#btnSaveProduct").off().on('click',function(){
        var check=fnValidCheckProduct();
@@ -114,11 +120,34 @@ function fnEventBind(){
 
     //header, footer를 제외, productId를 포함한 row
     $("tr[productId]").off().on('dblclick',function(){
+        $("#btnDelProduct").show();
         var id=$(this).attr('productId');
         fnPopupModalProduct(id);
     });
+    $("#btnDelProduct").off().on('click',function(){
+        var res=confirm('삭제하시겠습니까?');
+        if(res){
+            fnDeleteProduct($("#modalProduct").attr('productId'));
+        }
+    });
 
-
+}
+function fnDeleteProduct(productId){
+    $.ajax({ 
+        url: "/api/product/"+productId,
+        method: "DELETE",   
+        success:success,
+        fail:fail
+    });
+    function success(data){
+        alert('삭제되었습니다.');
+        $("#modalProduct").modal('toggle');
+        fnGetAllProductList();
+        
+    }
+    function fail(err){
+        console.log(err);
+    }
 }
 function fnSearchProduct(keyword){
     $.ajax({ 

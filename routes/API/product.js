@@ -89,5 +89,15 @@ router.put("/:id", (req, res) => {
     res.status(404).send('ID was not found');
   }    
 });
-
+router.delete("/:id",(req,res)=>{
+  var product;
+  for (var i = 0; i < productList.length; ++i) {
+    if (productList[i].id == parseInt(req.params.id)) {
+      product = productList[i];
+      productList.splice(i, 1);
+      break;
+    }
+  }
+  res.send(product);
+});
 module.exports = router;

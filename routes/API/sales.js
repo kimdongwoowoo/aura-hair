@@ -30,15 +30,6 @@ router.post('/', (req, res, next) =>{
   
 });
 
-router.delete("/:id", (req, res) => {
-  for(var i=0;i<salesList.length;++i){
-
-    if(salesList[i].id==parseInt(req.params.id)){
-      salesList.splice(i, 1)
-      break;
-    }
-  }
-});
 
 router.put("/:id", (req, res) => {
   var sales;
@@ -78,5 +69,15 @@ router.get("/:id", (req, res) => {
   if (!sales) res.status(404).send('ID was not found');
   res.send(sales);
 });
-
+router.delete("/:id",(req,res)=>{
+  var sales;
+  for (var i = 0; i < salesList.length; ++i) {
+    if (salesList[i].id == parseInt(req.params.id)) {
+      sales = salesList[i];
+      salesList.splice(i, 1);
+      break;
+    }
+  }
+  res.send(sales);
+});
 module.exports = router;

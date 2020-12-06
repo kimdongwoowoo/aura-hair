@@ -203,11 +203,11 @@
           <div class="modal-body border-bottom">
             <form>
               <div class="form-group row">
-                <label for="inputFee" class="col-form-label col-3">시간</label>
+                <label for="inputFee" class="col-form-label col-2">시간</label>
                 <div class="col-5">
                   <input type="date" class="form-control" id="inputDate" placeholder="Select time">
                 </div>
-                <div class="col-4">
+                <div class="col-5">
                   <input type="time" class="form-control" id="inputTime" placeholder="Select time">
                 </div>                
               </div>
@@ -289,8 +289,9 @@
         
       
           <div class="modal-footer">
+            <button type="button" class="btn btn-danger" id="btnDelSales">삭제</button>
             <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-            <button type="button" id="btnSaveSales" class="btn btn-primary">저장</button>
+            
           </div>
         </div>
       </div>
@@ -304,10 +305,10 @@
 
 <script id="tbSalesList-template" type="text/x-handlebars-template">
     {{#salesList}}
-    <tr salesId='{{id}}'>
+    <tr salesId='{{id}}' data-customerid="{{customerInfo.id}}">
         <td>{{customerInfo.name}}</td>
         <td>{{customerInfo.phone}}</td>
-        <td>{{fee}}</td>
+        <td id="tdSalesListFee">{{fee}}</td>
         <td>{{date}} / {{time}}</td>
      </tr>
      {{/salesList}}

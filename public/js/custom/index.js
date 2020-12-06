@@ -1,5 +1,6 @@
 $(document).ready(function(){
     sidebarEventBind();
+    $("#sidebar_sales").click();
 });
 function sidebarEventBind(){
     $(".nav-item").click(function(){

@@ -24,7 +24,7 @@
                             <th>주소</th>
                             <th>등급</th>
                             <th>포인트</th>
-                            <th>방문</th>
+                            
                         </tr>
                     </thead>
                   
@@ -36,7 +36,7 @@
         </div>
 
         <div class="modal fade" id="modalCustomer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" customerId="">
-            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="exampleModalLabel">고객 추가</h5>
@@ -110,8 +110,7 @@
         <td>{{phone}}</td>
         <td>{{address}}</td>
         <td>{{vip}}</td>
-        <td>{{point}}</td>
-        <td>{{lastVisit}}</td>
+        <td id="tdCustomerListPoint">{{point}}</td>
      </tr>
      {{/customerList}}
 </script>

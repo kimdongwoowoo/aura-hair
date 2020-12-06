@@ -30,6 +30,9 @@ function fnRenderCustomerList(data){
     var template=Handlebars.compile(source);
     var html=template(renderData);
     $("#tbCustomerListBody").html(html);
+    $("[id=tdCustomerListPoint]").each((idx,td)=>{
+        $(td).text('￦'+$.number($(td).text(),0,','));
+    });
     $('#tbCustomerList').dataTable({
         "language": {
             "decimal": "",
@@ -79,10 +82,12 @@ function fnUpdateCustomer(customer){
     }
 }
 function fnEventBind(){
+    $("#inputCustomerPoint").number(true,0);
     $("#btnNewCustomer").off().on('click',function(){
         $("#modalCustomer").attr('customerId',''); //신규고객은 modal에서 id삭제
         $('.modal-body form')[0].reset(); //전체 form 리셋
         $("#modalCustomer").modal('toggle');
+        $("#btnDelCustomer").hide();
     });
     $("#btnSaveCustomer").off().on('click',function(){
        var check=fnValidCheckCustomer();
@@ -121,8 +126,15 @@ function fnEventBind(){
 
     //header, footer를 제외, customerId를 포함한 row
     $("tr[customerId]").off().on('dblclick',function(){
+        $("#btnDelCustomer").show();
         var id=$(this).attr('customerId');
         fnPopupModalCustomer(id);
+    });
+    $("#btnDelCustomer").off().on('click',function(){
+        var res=confirm('삭제하시겠습니까?');
+        if(res){
+            fnDeleteCustomer($("#modalCustomer").attr('customerId'));
+        }
     });
 
 
@@ -135,6 +147,7 @@ function fnDeleteCustomer(customerId){
         fail:fail
     });
     function success(data){
+        alert('삭제되었습니다.');
         $("#modalCustomer").modal('toggle');
         fnGetAllCustomerList();
         

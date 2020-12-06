@@ -9,8 +9,7 @@ var customerList=[
     phone:"010-1212-1212",
     address:"3단지",
     vip:"SILVER",
-    point:"5126412",
-    lastVisit:521123,
+    point:"50000",
     memo:"abc"
   },
   {
@@ -19,8 +18,7 @@ var customerList=[
     phone:"010-4211-6666",
     address:"2단지",
     vip:"GOLD",
-    point:"5125126412",
-    lastVisit:612125,
+    point:"1000000",
     memo:"def"
   }
 ]
@@ -67,7 +65,6 @@ router.post('/', (req, res, next) =>{
     address:req.body.address,
     vip:req.body.vip,
     point:req.body.point,
-    //lastVisit:-1,
     memo:req.body.memo,
 
   }
@@ -88,13 +85,19 @@ router.put("/:id", (req, res) => {
     }
     
   }
-  if(customer){     
-    customer.name=req.body.name;
-    customer.phone=req.body.phone;
-    customer.address=req.body.address;
-    customer.vip=req.body.vip;
-    customer.point=req.body.point;
-    customer.memo=req.body.memo;
+  if(customer){
+    if(req.body.name)
+      customer.name=req.body.name;
+    if(req.body.phone)
+      customer.phone=req.body.phone;
+    if(req.body.address)
+      customer.address=req.body.address;
+    if(req.body.vip)
+      customer.vip=req.body.vip;
+    if(req.body.point)
+      customer.point=req.body.point;
+    if(req.body.memo)
+      customer.memo=req.body.memo;
     res.send(customer);
   }else{
     res.status(404).send('ID was not found');

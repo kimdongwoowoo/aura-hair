@@ -29,6 +29,10 @@ function fnRenderSalesList(data){
     var template=Handlebars.compile(source);
     var html=template(renderData);
     $("#tbSalesListBody").html(html);
+    $("[id=tdSalesListFee]").each((idx,td)=>{
+        $(td).text('￦'+$.number($(td).text(),0,','));
+    });
+    
     if (!$.fn.dataTable.isDataTable('#tbSalesList')) {
         $('#tbSalesList').dataTable({
             "language": {
@@ -78,7 +82,7 @@ function fnUpdateSales(sales){
         console.log(err);
     }
 }
-function fnModalEventBind(){
+function fnInputModalEventBind(){
     //원화 세팅
     $("#inputPrice,#inputDiscount,#inputPointUse,#inputFee,#inputPointTotal").number(true,0);
 
@@ -115,10 +119,13 @@ function fnModalEventBind(){
             $("#divProductSearch").collapse('show');
             $("#inputPrice").attr('readonly',true);
             $("#inputPrice").val('0');
+            $("#inputPointUse").val("0");
+            $("#inputPointUse").trigger('input');
+            $("#radioNoneDiscount").click();
         }else if($(this).attr('id')=="radioSelfPrice"){
             $("#divProductSearch").collapse('hide');
             $("#inputPrice").attr('readonly',false);
-            $("#inputPrice").val('0');
+            
         }
     });
   
@@ -150,7 +157,7 @@ function fnModalEventBind(){
         
     });
     //상품가격 변경시
-    $("#inputPrice,#inputDiscount,#inputPointUse").on('input', function() {
+    $("#inputPrice,#inputDiscount,#inputPointUse").on('input keydown',function() {
         if($(this).attr('id')=="inputDiscount"){
             if($("#formSelectDiscount [id^=radio]:checked").attr('id')=="radioPercentDiscount"){
                 var val=$(this).val();
@@ -167,6 +174,7 @@ function fnModalEventBind(){
         fnCheckSaveSales();
     });
     fnInitModalForm(); //라디오버튼 등 form 초기화
+
 }
 
 function fnCalculateFee(){
@@ -201,6 +209,12 @@ function fnCheckSaveSales(){
     if(date=="" || time==""){
         alert('방문 날짜/시간을 확인하세요');
         return;        
+    }
+    
+    if($("#inputPointUse").val()>0){
+        if(!confirm('포인트를 차감하시겠습니까?')){
+            return;
+        }
     }
     fnMakeSales();
 }
@@ -255,27 +269,100 @@ function fnMakeSales(){
     sale.time=$("#inputTime").val();
     //DatePicker 추가
     sale.memo=$("#inputSalesMemo").val();
+
     fnSaveNewSales(sale);
+    if(sale.customerInfo.id!=-1 && sale.pointUse>0)
+        fnUsePoint(sale.customerInfo.id,sale.pointUse);
     
 }
+function fnUsePoint(customerId,point){
+    $.ajax({ 
+        url: "/api/customer/"+customerId,
+        method: "GET",
+        dataType: "json",
+        success:success,
+        fail:fail
+    });
+    function success(data){
+        $.ajax({ 
+            url: "/api/customer/"+data.id,
+            method: "PUT",
+            dataType: "json",
+            data:{
+                point:Number(data.point)-Number(point)
+            }
+        });
+        
+    }
+    function fail(err){
+        console.log(err);
+    }
+}
+function fnRefundPoint(customerId,point){
+    $.ajax({ 
+        url: "/api/customer/"+customerId,
+        method: "GET",
+        dataType: "json",
+        success:success,
+        fail:fail
+    });
+    function success(data){
+        $.ajax({ 
+            url: "/api/customer/"+data.id,
+            method: "PUT",
+            dataType: "json",
+            data:{
+                point:Number(data.point)+Number(point)
+            }
+        });
+        
+    }
+    function fail(err){
+        console.log(err);
+    }
+}
+
+
 function fnInitModalForm(){
     $('.modal-body form')[0].reset(); //전체 form 리셋
+    $("#inputPrice").val("0");
+
     $("#radioNoneUser").click();
     $("#radioNoneDiscount").click();
     $("#radioSelfPrice").click();
 }
 function fnEventBind(){
     $("#btnNewSales").off().on('click',function(){
+        
         $("#modalSales").attr('salesId',''); //신규등록은 modal에서 id삭제
-        fnModalEventBind(); //modal 이벤트바인드
+        fnInputModalEventBind(); //modal 이벤트바인드
         $("#modalSales").modal('toggle');
         
     });
+    
     //header, footer를 제외, salesId를 포함한 row
     $("tr[salesId]").off().on('dblclick',function(){
-        var id=$(this).attr('salesId');
-        fnPopupModalSales(id);
+        const salesId=$(this).attr('salesId');
+        $("#modalReceipt").attr('salesId',salesId);
+        const customerId=$(this).data('customerid');
+        $("#modalReceipt").attr('customerId',customerId);
+        fnPopupModalSales(salesId);
+        
     });
+    $("#btnDelSales").off().on('click',function(){
+        if(confirm("삭제하시겠습니까?")){
+            if($("#modalReceipt").attr('customerId')!=-1 && $("#tdPoint").data('point')>0){
+                if(confirm("포인트를 환불하시겠습니까?")){
+                    const customerId=$("#modalReceipt").attr('customerId');
+                    const point=$("#tdPoint").data('point');
+                    fnRefundPoint(customerId,point);
+                }
+            }
+            const salesId=$("#modalReceipt").attr('salesId');
+            fnDeleteSales(salesId);
+        }
+    });
+   
 
 
 }
@@ -387,9 +474,28 @@ function fnSearchSales(keyword){
         console.log(err);
     }
 }
+function fnDeleteSales(salesId){
+    $.ajax({ 
+        url: "/api/sales/"+salesId,
+        method: "DELETE",   
+        success:success,
+        fail:fail
+    });
+    function success(data){
+        alert('삭제되었습니다.');
+        $("#modalReceipt").modal('toggle');
+        fnGetAllSalesList();   
+    }
+    function fail(err){
+        console.log(err);
+    }
+}
+function fnReceiptModalEventBind(){
+        
+   
+}
 function fnPopupModalSales(salesId){
-    $("#modalReceipt").attr('salesId',salesId);
-    
+
     $.ajax({ 
         url: "/api/sales/"+salesId,
         method: "GET", 
@@ -400,6 +506,7 @@ function fnPopupModalSales(salesId){
     function success(data){
         
         $("#modalReceipt input").attr('disabled',true); //일단 다 비활성화
+        
         $('[id^=trDetail]').collapse('hide');
         var receiptName=data.customerInfo.name;
         if(data.customerInfo.phone!="")
@@ -407,30 +514,37 @@ function fnPopupModalSales(salesId){
         $("#tdReceiptName").text(receiptName);
         $("#divReceiptFee").text('￦'+$.number(data.fee,0,','));
         $("#tdPrice").text('￦'+$.number(data.price,0,','));
-        if(data.discountType==0)
-            $("#trDetailDiscount").remove();
-        else if(data.discountType==1){
+        $("#modalReceipt").data('discountType',data.discountType);
+        if(data.discountType==1){
             $("#tdDiscount").text("-￦"+ $.number(data.price*data.discountValue*0.01,0,','));
         }else if(data.discountType==2){
             $("#tdDiscount").text("-￦"+ $.number(data.discountValue,0,','));
         }
-
-        if(data.customerInfo.id==-1 || data.pointUse==0){
-            $("#trDetailPoint").remove();
-        }else{
+        $("#modalReceipt").data('customerId',data.customerInfo.id);
+        if(data.customerInfo.id!=-1){
+            
             $("#tdPoint").text("-￦"+$.number(data.pointUse,0,','));
+            $("#tdPoint").data('point',data.pointUse);
         }
         $("#tdFee").text('￦'+$.number(data.fee,0,','));
 
         
         $("#aReceiptDetail").off().on('click',function(){
-            $('[id^=trDetail]').collapse('toggle');
+            if($("#modalReceipt").data('discountType')!=0){
+                $("#trDetailDiscount").collapse('toggle');
+            }
+            if($("#modalReceipt").data('customerId')!=-1){
+                $("#trDetailPoint").collapse('toggle');
+            }            
+            $("#trDetailPrice").collapse('toggle');
+            $("#trDetailFee").collapse('toggle');
         });
         $("#tdReceiptDate").text(data.date+" / "+data.time);
         $("#tdReceiptMemo").text(data.memo);
         //메모,날짜만 활성화
         //정책 : 환불, 수정등은 삭제후 재등록 
         $("#modalReceipt").modal('toggle');
+        
     }
     function fail(err){
         console.log(err);

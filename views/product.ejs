@@ -75,6 +75,7 @@
                   </form>
                 </div>
                 <div class="modal-footer">
+                  <button type="button" class="btn btn-danger" id="btnDelProduct">삭제</button>
                   <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
                   <button type="button" id="btnSaveProduct" class="btn btn-primary">저장</button>
                 </div>
@@ -94,7 +95,7 @@
     <tr productId='{{id}}'>
         <td>{{class}}</td>
         <td>{{name}}</td>
-        <td>{{price}}</td>
+        <td id='tdbProductListPrice'>{{price}}</td>
      </tr>
      {{/productList}}
 </script>
