@@ -35,4 +35,13 @@ function sidebarEventBind(){
             }    
         });
     });
+    $("#sidebar_schedule").click(function(){
+        $.ajax({ 
+            type: 'post' , 
+            url: '/schedule' , 
+            success: function(data) { 
+                $("#content").html(data); 
+            }    
+        });
+    });
 }

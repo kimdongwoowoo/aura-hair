@@ -16,6 +16,9 @@ router.post('/product', function(req, res, next) {
 router.post('/sales', function(req, res, next) {
   res.render('sales');
 });
+router.post('/schedule', function(req, res, next) {
+  res.render('schedule');
+});
 
 
 module.exports = router;
