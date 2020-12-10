@@ -71,8 +71,14 @@ $(document).ready(function(){
           url: 'http://google.com/',
           start: '2020-09-28'
         }
-      ]
+      ],
+      dateClick: function(info) {
+        console.log(info);
+        // change the day's background color just for fun
+        info.dayEl.style.backgroundColor = 'red';
+      }
     });
+   
 
     calendar.render();
  
