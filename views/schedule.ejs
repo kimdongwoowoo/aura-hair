@@ -1,16 +1,16 @@
 <script src="js/custom/schedule.js"></script>
 
 <!-- Begin Page Content -->
- <div class="container-fluid">
+<div class="container-fluid">
   
-    <div id='calendar'></div>
+    <div id='calendar' class="ml-0"></div>
 
 </div>
 
 
 <!-- /.container-fluid -->
 
-<div class="modal fade" id="modalSchedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="modalSchedule" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true" scheduleId>
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -38,44 +38,46 @@
             </div>
           </div>
         
-          <div class="" id="divTime">
+          <!--하루종일-->
+          <div class="" id="divAllDay" style="display: none;">
             <div class="form-group row">
-              <label for="inputFee" class="col-form-label col-2">시작</label>
+              <label class="col-form-label col-2">시작</label>
               <div class="col-10">
-                <input type="date" class="form-control" id="inputDate" placeholder="Select time">
+                <input type="date" class="form-control" id="inputAllDayDateStart">
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputFee" class="col-form-label col-2">종료</label>
+              <label class="col-form-label col-2">종료</label>
               <div class="col-10">
-                <input type="date" class="form-control" id="inputDate" placeholder="Select time">
+                <input type="date" class="form-control" id="inputAllDayDateEnd">
               </div>
             </div>
           </div>
-          <div class="" id="divAllDay">
+          <!--시간-->
+          <div class="" id="divTime">
             <div class="form-group row">
-              <label for="inputFee" class="col-form-label col-2">시작</label>
+              <label class="col-form-label col-2">시작</label>
               <div class="col-5">
-                <input type="date" class="form-control" id="inputDate" placeholder="Select time">
+                <input type="date" class="form-control" id="inputDate">
               </div>
               <div class="col-5">
-                <input type="time" class="form-control" id="inputDate" placeholder="Select time">
+                <input type="time" class="form-control" id="inputTimeStart">
               </div>
             </div>
             <div class="form-group row">
-              <label for="inputFee" class="col-form-label col-2">종료</label>
+              <label class="col-form-label col-2">종료</label>
               <div class="col-5"></div>
               <div class="col-5">
-                <input type="time" class="form-control" id="inputDate" placeholder="Select time">
+                <input type="time" class="form-control" id="inputTimeEnd">
               </div>
             </div>
           </div>
         </form>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-danger" id="btnDelProduct">삭제</button>
+        <button type="button" class="btn btn-danger" id="btnDelSchedule">삭제</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-        <button type="button" id="btnSaveProduct" class="btn btn-primary">저장</button>
+        <button type="button" id="btnSaveSchedule" class="btn btn-primary">저장</button>
       </div>
     </div>
   </div>
@@ -86,7 +88,7 @@
 <style>
 
 #calendar {
-    max-width: 1100px;
+    max-width: 1000px;
     margin: 0 auto;
   }
 </style>

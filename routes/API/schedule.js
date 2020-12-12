@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
-var calendar = [
+var calendarTest = [
+    
     {
         title: 'All Day Event',
         start: '2020-09-01'
@@ -58,6 +59,7 @@ var calendar = [
         start: '2020-09-28'
     }
 ];
+var calendar = [];
 router.use(express.json());
 
 router.get('/', (req, res, next) => {
@@ -85,7 +87,7 @@ router.put("/:id", (req, res) => {
 
     }
     if (schedule) {
-        res.send(sales);
+        res.send(schedule);
     } else {
         res.status(404).send('ID was not found');
     }
