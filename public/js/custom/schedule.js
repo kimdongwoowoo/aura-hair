@@ -13,6 +13,9 @@ function fnGetScheduleList() {
     fail: fail
   });
   function success(data) {
+    for(var i=0;i<data.length;++i){
+      data[i].id=data[i]._id;
+    }
     fnLoadCalendar(data);
   }
   function fail(err) {
@@ -156,6 +159,7 @@ function fnAddNewEvent(){
     fail: fail
   });
   function success(data) {
+    data.id=data._id
     calendar.addEvent(data);
     $("#modalSchedule").modal('hide');
   }

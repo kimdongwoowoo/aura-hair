@@ -305,7 +305,7 @@
 
 <script id="tbSalesList-template" type="text/x-handlebars-template">
     {{#salesList}}
-    <tr salesId='{{id}}' data-customerid="{{customerInfo.id}}">
+    <tr salesId='{{_id}}' data-customerid="{{customerInfo._id}}">
         <td>{{customerInfo.name}}</td>
         <td>{{customerInfo.phone}}</td>
         <td id="tdSalesListFee">{{fee}}</td>
@@ -316,12 +316,12 @@
 
 <script id="selectCustomerList-template" type="text/x-handlebars-template">
   {{#customerList}}
-    <option data-customerid='{{id}}' data-customername='{{name}}' data-customerphone='{{phone}}' data-point='{{point}}' data-vip='{{vip}}'>{{name}} ({{phone}}) 등급 {{vip}}</option>
+    <option data-customerid='{{_id}}' data-customername='{{name}}' data-customerphone='{{phone}}' data-point='{{point}}' data-vip='{{vip}}'>{{name}} ({{phone}}) 등급 {{vip}}</option>
 
    {{/customerList}}
 </script>
 <script id="selectProductList-template" type="text/x-handlebars-template">
   {{#productList}}
-    <option data-productid='{{id}}' data-productname='{{name}}' data-price='{{price}}'>{{name}} ({{price}}) </option>
+    <option data-productid='{{_id}}' data-productname='{{name}}' data-price='{{price}}'>{{name}} ({{price}}) </option>
    {{/productList}}
 </script>

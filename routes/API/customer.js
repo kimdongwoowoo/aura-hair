@@ -2,6 +2,8 @@
 //고객 관련 api (ajax호출용), URL : /customer
 var express = require('express');
 var router = express.Router();
+const Customer = require('../../models/customer');
+/*
 var customerList=[
   {
     id:1,
@@ -113,6 +115,47 @@ router.delete("/:id",(req,res)=>{
     }
   }
   res.send(customer);
+});
+*/
+// Find All
+router.get('/', (req, res) => {
+  Customer.findAll(req.query.keyword)
+    .then((customer) => {
+      if (!customer.length) return res.send([]);
+      res.send(customer);
+    })
+    .catch(err => res.status(500).send(err));
+});
+
+// Find One by id
+router.get('/:id', (req, res) => {
+  Customer.findOneById(req.params.id)
+    .then((customer) => {
+      if (!customer) return res.status(404).send({ err: 'customer not found' });
+      res.send(customer);
+    })
+    .catch(err => res.status(500).send(err));
+});
+
+// Create new
+router.post('/', (req, res) => {
+  Customer.create(req.body)
+    .then(customer => res.send(customer))
+    .catch(err => res.status(500).send(err));
+});
+
+// Update by id
+router.put('/:id', (req, res) => {
+  Customer.updateById(req.params.id, req.body)
+    .then(customer => res.send(customer))
+    .catch(err => res.status(500).send(err));
+});
+
+// Delete by id
+router.delete('/:id', (req, res) => {
+  Customer.deleteById(req.params.id)
+    .then(() => res.sendStatus(200))
+    .catch(err => res.status(500).send(err));
 });
 
 module.exports = router;

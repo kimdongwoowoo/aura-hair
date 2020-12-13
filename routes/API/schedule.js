@@ -1,5 +1,7 @@
 var express = require('express');
 var router = express.Router();
+const Schedule = require('../../models/schedule');
+/*
 var calendarTest = [
     
     {
@@ -92,4 +94,46 @@ router.put("/:id", (req, res) => {
         res.status(404).send('ID was not found');
     }
 });
+*/
+// Find All
+router.get('/', (req, res) => {
+    Schedule.findAll(req.query.keyword)
+      .then((schedule) => {
+        if (!schedule.length) return res.send([]);
+        res.send(schedule);
+      })
+      .catch(err => res.status(500).send(err));
+  });
+  
+  // Find One by id
+  router.get('/:id', (req, res) => {
+    Schedule.findOneById(req.params.id)
+      .then((schedule) => {
+        if (!schedule) return res.status(404).send({ err: 'schedule not found' });
+        res.send(schedule);
+      })
+      .catch(err => res.status(500).send(err));
+  });
+  
+  // Create new
+  router.post('/', (req, res) => {
+    Schedule.create(req.body)
+      .then(schedule => res.send(schedule))
+      .catch(err => res.status(500).send(err));
+  });
+  
+  // Update by id
+  router.put('/:id', (req, res) => {
+    Schedule.updateById(req.params.id, req.body)
+      .then(schedule => res.send(schedule))
+      .catch(err => res.status(500).send(err));
+  });
+  
+  // Delete by id
+  router.delete('/:id', (req, res) => {
+    Schedule.deleteById(req.params.id)
+      .then(() => res.sendStatus(200))
+      .catch(err => res.status(500).send(err));
+  });
+  
 module.exports = router;

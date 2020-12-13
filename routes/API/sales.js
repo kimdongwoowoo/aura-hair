@@ -2,9 +2,11 @@
 //장부 관련 api (ajax호출용), URL : /sales
 var express = require('express');
 var router = express.Router();
-var salesList=[];
+const Sales = require('../../models/sales');
+//var salesList=[];
 router.use(express.json());
 
+/*
 // /api/sales
 // GET 
 // 리스트
@@ -45,7 +47,7 @@ router.put("/:id", (req, res) => {
   if(sales){
     var updateSales={
       id:sales.id, //업데이트할 sales id
-      customerId:req.body.customerId,
+      salesId:req.body.salesId,
       productId:req.body.productId,
       price:req.body.price,
       discountType:req.body.discountType,
@@ -79,5 +81,45 @@ router.delete("/:id",(req,res)=>{
     }
   }
   res.send(sales);
+});
+*/
+router.get('/', (req, res) => {
+  Sales.findAll(req.query.keyword)
+    .then((sales) => {
+      if (!sales.length) return res.send([]);
+      res.send(sales);
+    })
+    .catch(err => res.status(500).send(err));
+});
+
+// Find One by id
+router.get('/:id', (req, res) => {
+  Sales.findOneById(req.params.id)
+    .then((sales) => {
+      if (!sales) return res.status(404).send({ err: 'sales not found' });
+      res.send(sales);
+    })
+    .catch(err => res.status(500).send(err));
+});
+
+// Create new
+router.post('/', (req, res) => {
+  Sales.create(req.body)
+    .then(sales => res.send(sales))
+    .catch(err => res.status(500).send(err));
+});
+
+// Update by id
+router.put('/:id', (req, res) => {
+  Sales.updateById(req.params.id, req.body)
+    .then(sales => res.send(sales))
+    .catch(err => res.status(500).send(err));
+});
+
+// Delete by id
+router.delete('/:id', (req, res) => {
+  Sales.deleteById(req.params.id)
+    .then(() => res.sendStatus(200))
+    .catch(err => res.status(500).send(err));
 });
 module.exports = router;

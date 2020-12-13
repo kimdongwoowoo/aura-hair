@@ -64,24 +64,6 @@ function fnRenderSalesList(data){
     }
     fnEventBind();
 }
-function fnUpdateSales(sales){
-     //PUT
-     $.ajax({ 
-        url: "/api/sales/"+sales.id,
-        method: "PUT",
-        data:sales,
-        dataType: "json",
-        success:success,
-        fail:fail
-    });
-    function success(data){
-        $("#modalSales").modal('toggle');
-        fnGetAllSalesList();
-    }
-    function fail(err){
-        console.log(err);
-    }
-}
 function fnInputModalEventBind(){
     //원화 세팅
     $("#inputPrice,#inputDiscount,#inputPointUse,#inputFee,#inputPointTotal").number(true,0);
@@ -113,6 +95,10 @@ function fnInputModalEventBind(){
             fnSearchCustomer(keyword);
         }
     });
+    $("#inputSearchCustomer").keyup(function(e){
+        if(e.keyCode==13)
+            $("#btnSearchCustomer").click();
+    });
     //제품관련
     $("#formSelectProduct [id^=radio]").off().on('click',function(){
         if($(this).attr('id')=="radioProduct"){
@@ -137,6 +123,10 @@ function fnInputModalEventBind(){
         }else{
             fnSearchProduct(keyword);
         }
+    });
+    $("#inputSearchProduct").keyup(function(e){
+        if(e.keyCode==13)
+            $("#btnSearchProduct").click();
     });
     //할인관련
 
@@ -169,6 +159,10 @@ function fnInputModalEventBind(){
         }
         fnCalculateFee();
     });
+    //날짜 디폴트 : 오늘
+    var d=new Date();
+    $("#inputDate").val(moment(d).format("YYYY-MM-DD"));
+    $("#inputTime").val(moment(d).format("HH:mm"));
     //저장
     $("#btnSaveSales").off().on('click',function(){
         fnCheckSaveSales();
@@ -221,12 +215,12 @@ function fnCheckSaveSales(){
 function fnMakeSales(){
     var sale={
         customerInfo:{
-            id:-1,
+            _id:-1,
             name:"",
             phone:"",            
         },
         productInfo:{
-            id:-1,
+            _id:-1,
             name:""
         },        
         price:0,
@@ -276,6 +270,7 @@ function fnMakeSales(){
     
 }
 function fnUsePoint(customerId,point){
+;
     $.ajax({ 
         url: "/api/customer/"+customerId,
         method: "GET",
@@ -283,11 +278,14 @@ function fnUsePoint(customerId,point){
         success:success,
         fail:fail
     });
+    
+    
     function success(data){
         $.ajax({ 
-            url: "/api/customer/"+data.id,
+            url: "/api/customer/"+data._id,
             method: "PUT",
             dataType: "json",
+            
             data:{
                 point:Number(data.point)-Number(point)
             }
@@ -308,7 +306,7 @@ function fnRefundPoint(customerId,point){
     });
     function success(data){
         $.ajax({ 
-            url: "/api/customer/"+data.id,
+            url: "/api/customer/"+data._id,
             method: "PUT",
             dataType: "json",
             data:{
@@ -436,8 +434,8 @@ function fnSelectCustomerListEventBind(){
         $("#radioPercentDiscount").click();
         const vipPercent={
             'SILVER':10,
-            'GOLD':15,
-            'VIP':20
+            'GOLD':20,
+            'VIP':30
         }
         $("#inputDiscount").val(vipPercent[vip]);
         $("#inputDiscount").trigger('input');

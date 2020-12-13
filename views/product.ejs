@@ -50,6 +50,8 @@
                         <option>분류없음</option>
                         <option>커트</option>
                         <option>펌</option>
+                        <option>컬러</option>
+                        <option>클리닉</option>
                       </select>
                     </div>
                     <div class="form-group">
@@ -92,7 +94,7 @@
 
 <script id="tbProductList-template" type="text/x-handlebars-template">
     {{#productList}}
-    <tr productId='{{id}}'>
+    <tr productId='{{_id}}'>
         <td>{{class}}</td>
         <td>{{name}}</td>
         <td id='tdbProductListPrice'>{{price}}</td>
