@@ -270,7 +270,6 @@ function fnMakeSales(){
     
 }
 function fnUsePoint(customerId,point){
-;
     $.ajax({ 
         url: "/api/customer/"+customerId,
         method: "GET",

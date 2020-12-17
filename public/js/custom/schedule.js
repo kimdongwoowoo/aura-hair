@@ -42,11 +42,94 @@ function fnLoadCalendar(data) {
     events:data,
     dateClick:fnDateClick,
     eventDrop:fnChangeInfo,
-    eventResize:fnChangeInfo
+    eventResize:fnChangeInfo,
+    eventClick:fnPopupEvent
 
     
   });
   calendar.render();
+}
+//UPDATE
+function fnPopupEvent(info){
+  
+  $("#modalSchedule").attr('scheduleId',info.event.id);
+  $("#inputTitle").val(info.event.title);
+  $("#btnDelSchedule").show();
+
+
+  const date=info.event.start
+  var start=info.event.start;
+  var end=info.event.end;
+  //종일 && start==end일때는 end가 없음 -> 설정
+  if(!end)
+    end=start;
+
+  $("#inputAllDayDateStart").val(moment(start).format("YYYY-MM-DD"));
+  $("#inputAllDayDateEnd").val(moment(end).format("YYYY-MM-DD"))
+  
+  $("#inputDate").val(moment(start).format("YYYY-MM-DD"));
+  $("#inputTimeStart").val(moment(start).format("HH:mm"));
+  $("#inputTimeEnd").val(moment(end).format("HH:mm"));
+  
+
+  
+  if($("#checkboxAllDay").prop('checked')){ //종일이 찍혀있으면
+    $("#checkboxAllDay").click(); //다시 uncheck
+  }
+  if(info.event.allDay){
+    $("#checkboxAllDay").click();
+  }
+  $("#modalSchedule").modal('show');
+
+
+
+}
+function fnUpdateEvent(){
+  var scheduleId=$("#modalSchedule").attr('scheduleid');
+  var event=calendar.getEventById(scheduleId);
+
+  if ($("#checkboxAllDay").prop('checked')) {
+    event = {
+      title: $("#inputTitle").val(),
+      start: $("#inputAllDayDateStart").val(),
+      end: $("#inputAllDayDateEnd").val(),
+      allDay: true
+    };
+
+
+  } else {
+    event = {
+      title: $("#inputTitle").val(),
+      start: $("#inputDate").val() + "T" + $("#inputTimeStart").val(),
+      end: $("#inputDate").val() + "T" + $("#inputTimeEnd").val(),
+      allDay: false
+    };
+  }
+  //DB 변경
+  $.ajax({
+    url: "/api/schedule/"+scheduleId,
+    method: "PUT",
+    data: JSON.stringify(event),
+    dataType: "json",
+    contentType: "application/json",
+    success: success,
+    fail: fail
+  });
+  function success(data) {
+    data.id = data._id
+    var e=calendar.getEventById(data.id);
+    e.setStart(data.start);
+    e.setEnd(data.end);
+    e.setProp("title",data.title);
+    e.setAllDay(data.allDay);
+    $("#modalSchedule").modal('hide');
+  }
+  function fail(err) {
+    console.log(err);
+  }
+  
+  
+
 }
 function fnChangeInfo(info){
   const event=info.event;
@@ -91,7 +174,11 @@ function fnChangeInfo(info){
 //새로운 일정 추가
 function fnDateClick(info){
   $("#modalSchedule").attr('scheduleId','');
-
+  $("#inputTitle").val("");
+  $("#btnDelSchedule").hide();
+  if($("#checkboxAllDay").prop('checked')){ //종일이 찍혀있으면
+    $("#checkboxAllDay").click(); //다시 uncheck
+  }
   const date=info.dateStr;
   $("#modalSchedule input[type=date]").val(date);
   $("#modalSchedule").modal('show');
@@ -112,20 +199,50 @@ function fnModalEventBind(){
     }
   });
   $("#btnSaveSchedule").off().on('click',function(){
+    
+    if($.trim($("#inputTitle").val())==""){
+      alert('제목을 입력하세요.');
+      return;
+    }
+    if(!$("#checkboxAllDay").prop('checked') && $("#inputTimeStart").val()==$("#inputTimeEnd").val()){
+      alert('시간은 동일할 수 없습니다.');
+      return;
+    }
+    
     //새 일정
     if($("#modalSchedule").attr('scheduleId')==""){
-      if($.trim($("#inputTitle").val())==""){
-        alert('제목을 입력하세요.');
-        return;
-      }
-      if(!$("#checkboxAllDay").prop('checked') && $("#inputTimeStart").val()==$("#inputTimeEnd").val()){
-        alert('시간은 동일할 수 없습니다.');
-        return;
-      }
-
       fnAddNewEvent();
+    }else{
+      fnUpdateEvent();
     }
   });
+
+  $("#btnDelSchedule").off().on('click',function(){
+    var res=confirm('삭제하시겠습니까?');
+        if(res){
+            fnDeleteSchedule($("#modalSchedule").attr('scheduleId'));
+        }
+  });
+}
+function fnDeleteSchedule(scheduleId){
+  $.ajax({
+    url: "/api/schedule/" + scheduleId,
+    method: "DELETE",
+    success: success,
+    fail: fail
+  });
+  function success(data) {
+    //UI 변경
+    //삭제된 스케줄의 id
+    var scheduleId=$("#modalSchedule").attr('scheduleId');
+    alert('삭제되었습니다.');
+    $("#modalSchedule").modal('hide');
+    calendar.getEventById(scheduleId).remove();
+
+  }
+  function fail(err) {
+    console.log(err);
+  }
 }
 //ajax POST 응답으로 캘린더에 저장
 function fnAddNewEvent(){
