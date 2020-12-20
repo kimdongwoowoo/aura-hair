@@ -333,7 +333,8 @@ function fnEventBind(){
         
         $("#modalSales").attr('salesId',''); //신규등록은 modal에서 id삭제
         fnInputModalEventBind(); //modal 이벤트바인드
-        $("#modalSales").modal('toggle');
+        $("#modalSales").modal({backdrop:'static',keyboard:false});
+        //$("#modalSales").modal('show');
         
     });
     
@@ -480,7 +481,7 @@ function fnDeleteSales(salesId){
     });
     function success(data){
         alert('삭제되었습니다.');
-        $("#modalReceipt").modal('toggle');
+        $("#modalReceipt").modal('hide');
         fnGetAllSalesList();   
     }
     function fail(err){
@@ -540,7 +541,8 @@ function fnPopupModalSales(salesId){
         $("#tdReceiptMemo").text(data.memo);
         //메모,날짜만 활성화
         //정책 : 환불, 수정등은 삭제후 재등록 
-        $("#modalReceipt").modal('toggle');
+        $("#modalReceipt").modal({backdrop:'static',keyboard:false});
+        //$("#modalReceipt").modal('show');
         
     }
     function fail(err){
@@ -560,7 +562,7 @@ function fnSaveNewSales(sales){
         fail:fail
     });
     function success(data){
-        $("#modalSales").modal('toggle');
+        $("#modalSales").modal('hide');
         fnGetAllSalesList();
     }
     function fail(err){

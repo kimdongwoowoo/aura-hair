@@ -74,7 +74,8 @@ function fnUpdateCustomer(customer){
         fail:fail
     });
     function success(data){
-        $("#modalCustomer").modal('toggle');
+        
+        $("#modalCustomer").modal('hide');
         fnGetAllCustomerList();
     }
     function fail(err){
@@ -86,7 +87,7 @@ function fnEventBind(){
     $("#btnNewCustomer").off().on('click',function(){
         $("#modalCustomer").attr('customerId',''); //신규고객은 modal에서 id삭제
         $('.modal-body form')[0].reset(); //전체 form 리셋
-        $("#modalCustomer").modal('toggle');
+        $("#modalCustomer").modal({backdrop:'static',keyboard:false});
         $("#btnDelCustomer").hide();
     });
     $("#btnSaveCustomer").off().on('click',function(){
@@ -148,7 +149,7 @@ function fnDeleteCustomer(customerId){
     });
     function success(data){
         alert('삭제되었습니다.');
-        $("#modalCustomer").modal('toggle');
+        $("#modalCustomer").modal('hide');
         fnGetAllCustomerList();
         
     }
@@ -192,7 +193,7 @@ function fnPopupModalCustomer(customerId){
         $("#inputCustomerPoint").val(data.point);
         $("#inputCustomerMemo").val(data.memo);
         
-        $("#modalCustomer").modal('toggle');
+        $("#modalCustomer").modal({backdrop:'static',keyboard:false});
     }
     function fail(err){
         console.log(err);
@@ -214,7 +215,7 @@ function fnSaveNewCustomer(customer){
         fail:fail
     });
     function success(data){
-        $("#modalCustomer").modal('toggle');
+        $("#modalCustomer").modal('hide');
         fnGetAllCustomerList();
     }
     function fail(err){

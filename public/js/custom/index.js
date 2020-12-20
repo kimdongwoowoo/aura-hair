@@ -44,4 +44,8 @@ function sidebarEventBind(){
             }    
         });
     });
+    $("#aMain").click(function(){
+        $("#sidebar_sales").click();
+    })
+    
 }

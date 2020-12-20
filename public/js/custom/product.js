@@ -74,7 +74,7 @@ function fnUpdateProduct(product){
         fail:fail
     });
     function success(data){
-        $("#modalProduct").modal('toggle');
+        $("#modalProduct").modal('hide');
         fnGetAllProductList();
     }
     function fail(err){
@@ -86,7 +86,7 @@ function fnEventBind(){
     $("#btnNewProduct").off().on('click',function(){
         $("#modalProduct").attr('productId',''); //신규고객은 modal에서 id삭제
         $('.modal-body form')[0].reset(); //전체 form 리셋
-        $("#modalProduct").modal('toggle');
+        $("#modalProduct").modal({backdrop:'static',keyboard:false});
         $("#btnDelProduct").hide();
     });
     $("#btnSaveProduct").off().on('click',function(){
@@ -141,7 +141,7 @@ function fnDeleteProduct(productId){
     });
     function success(data){
         alert('삭제되었습니다.');
-        $("#modalProduct").modal('toggle');
+        $("#modalProduct").modal('hide');
         fnGetAllProductList();
         
     }
@@ -183,7 +183,7 @@ function fnPopupModalProduct(productId){
         $("#inputProductPrice").val(data.price);
         $("#inputProductMemo").val(data.memo);
         
-        $("#modalProduct").modal('toggle');
+        $("#modalProduct").modal({backdrop:'static',keyboard:false});
     }
     function fail(err){
         console.log(err);
@@ -205,7 +205,7 @@ function fnSaveNewProduct(product){
         fail:fail
     });
     function success(data){
-        $("#modalProduct").modal('toggle');
+        $("#modalProduct").modal('hide');
         fnGetAllProductList();
     }
     function fail(err){
