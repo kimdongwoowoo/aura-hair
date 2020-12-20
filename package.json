@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "node ./bin/www",
-    "build":"pkg . -t win-x64"
+    "build": "pkg . -t win-x64"
   },
   "pkg": {
     "assets": [
@@ -17,11 +17,10 @@
       "public/scss/**",
       "public/img/**",
       "public/custom/**"
-
     ]
   },
-  "bin":{
-    "app":"./bin/www"
+  "bin": {
+    "app": "./bin/www"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
