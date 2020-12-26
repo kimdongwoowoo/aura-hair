@@ -137,7 +137,16 @@ function fnEventBind(){
             fnDeleteCustomer($("#modalCustomer").attr('customerId'));
         }
     });
-
+    //포인트 상세내역 닫기
+    $("#btnCloseHistory").off().on('click',function(){
+        $("#modalPointHistory").modal('hide');
+        $("#modalCustomer").modal({focus:true});
+    });
+    $("#inputCustomerPoint").off().on('dblclick',function(){
+        $("#modalCustomer").modal({focus:false});
+        $("#modalPointHistory").modal({keyboard:false});
+        $("#modalPointHistory").modal('show');
+    });
 
 }
 function fnDeleteCustomer(customerId){
