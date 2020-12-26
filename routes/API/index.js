@@ -4,6 +4,7 @@ var customerRouter = require('./customer');
 var productRouter = require('./product');
 var salesRouter = require('./sales');
 var scheduleRouter = require('./schedule');
+
 /* GET home page. */
 // /api/
 router.get('/', function(req, res, next) {

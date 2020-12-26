@@ -57,7 +57,9 @@ function fnRenderProductList(data){
             "aria": {
                 "sortAscending": ": 오름차순으로 정렬",
                 "sortDescending": ": 내림차순으로 정렬"
-            }
+            },
+            "iDisplayLength": 50
+            
         }
 
     });

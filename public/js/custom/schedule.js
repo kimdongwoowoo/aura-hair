@@ -33,6 +33,8 @@ function fnLoadCalendar(data) {
       right: 'dayGridMonth,timeGridWeek,timeGridDay,listMonth'
 
     },
+    initialView: 'timeGridWeek',
+    allDaySlot:false,
     editable: true,
     navLinks: true,
     selectable: true,
@@ -56,8 +58,6 @@ function fnPopupEvent(info){
   $("#inputTitle").val(info.event.title);
   $("#btnDelSchedule").show();
 
-
-  const date=info.event.start
   var start=info.event.start;
   var end=info.event.end;
   //종일 && start==end일때는 end가 없음 -> 설정
@@ -70,7 +70,12 @@ function fnPopupEvent(info){
   $("#inputDate").val(moment(start).format("YYYY-MM-DD"));
   $("#inputTimeStart").val(moment(start).format("HH:mm"));
   $("#inputTimeEnd").val(moment(end).format("HH:mm"));
-  
+  $("#inputTimeStart,#inputTimeEnd").timepicker({
+    'timeFormat': 'H:i',
+    'step': 30 // 30분 단위로 지정. ( 10을 넣으면 10분 단위 )
+  });
+  $('#inputTimeStart').timepicker('setTime', start);
+  $('#inputTimeEnd').timepicker('setTime', end);
 
   
   if($("#checkboxAllDay").prop('checked')){ //종일이 찍혀있으면
@@ -179,12 +184,27 @@ function fnDateClick(info){
   if($("#checkboxAllDay").prop('checked')){ //종일이 찍혀있으면
     $("#checkboxAllDay").click(); //다시 uncheck
   }
-  const date=info.dateStr;
-  $("#modalSchedule input[type=date]").val(date);
-  $("#modalSchedule").modal('show');
+  $("#inputDate").val(moment(info.date).format("YYYY-MM-DD"));
   
-  var d=new Date();
-  $("#modalSchedule input[type=time]").val(moment(d).format('HH:mm'));
+  //월별로 보기 캘린더에서 추가시
+  if(info.allDay){ 
+    //var d=new Date();
+    //$("#inputTimeStart").val(moment(d).format('HH:mm'));
+
+  }else{ //그외 추가시 (시간체크되어있음)
+   
+  }
+  $("#inputTimeStart,#inputTimeEnd").timepicker({
+    'timeFormat': 'H:i',
+    'step': 30 // 30분 단위로 지정. ( 10을 넣으면 10분 단위 )
+  });
+  var start=moment(info.date).format("hh:mm");
+  var end=moment(info.date).add(30,'minutes').format("hh:mm");
+  
+  $('#inputTimeStart').timepicker('setTime', start);
+  
+  $('#inputTimeEnd').timepicker('setTime',end);
+  $("#modalSchedule").modal('show');
   
   //info.dayEl.style.backgroundColor = 'red';
 }

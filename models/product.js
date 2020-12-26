@@ -23,7 +23,7 @@ productSchema.statics.findAll = function (keyword) {
   // return promise
   // V4부터 exec() 필요없음
   if(keyword){
-    return this.find().regex('name', keyword)
+    return this.find().or([{class:{$regex:keyword}},{name:{$regex:keyword}}]);
   }
   return this.find({});
 };

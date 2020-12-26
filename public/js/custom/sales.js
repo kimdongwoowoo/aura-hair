@@ -24,7 +24,10 @@ function fnGetAllSalesList(){
 function fnRenderSalesList(data){
     var source=$("#tbSalesList-template").html();
     var renderData={
-        "salesList":data
+        salesList:data
+    }
+    if ($.fn.dataTable.isDataTable('#tbSalesList')){
+        $('#tbSalesList').dataTable().fnDestroy();
     }
     var template=Handlebars.compile(source);
     var html=template(renderData);
@@ -33,35 +36,34 @@ function fnRenderSalesList(data){
         $(td).text('￦'+$.number($(td).text(),0,','));
     });
     
-    if (!$.fn.dataTable.isDataTable('#tbSalesList')) {
-        $('#tbSalesList').dataTable({
-            "language": {
-                "decimal": "",
-                "emptyTable": "등록된 내용이 없습니다.",
-                "info": "",
-                "infoEmpty": "",
-                "infoFiltered": "",
-                "infoPostFix": "",
-                "thousands": ",",
-                "lengthMenu": "_MENU_",
-                "loadingRecords": "로드 중 ...",
-                "processing": "처리 중 ...",
-                "search": "검색:",
-                "zeroRecords": "일치하는 내용이 없습니다.",
-                "paginate": {
-                    "first": "처음",
-                    "last": "마지막",
-                    "next": "다음",
-                    "previous": "이전"
-                },
-                "aria": {
-                    "sortAscending": ": 오름차순으로 정렬",
-                    "sortDescending": ": 내림차순으로 정렬"
-                }
+    $('#tbSalesList').dataTable({
+        "language": {
+            "decimal": "",
+            "emptyTable": "등록된 내용이 없습니다.",
+            "info": "",
+            "infoEmpty": "",
+            "infoFiltered": "",
+            "infoPostFix": "",
+            "thousands": ",",
+            "lengthMenu": "_MENU_",
+            "loadingRecords": "로드 중 ...",
+            "processing": "처리 중 ...",
+            "search": "검색:",
+            "zeroRecords": "일치하는 내용이 없습니다.",
+            "paginate": {
+                "first": "처음",
+                "last": "마지막",
+                "next": "다음",
+                "previous": "이전"
+            },
+            "aria": {
+                "sortAscending": ": 오름차순으로 정렬",
+                "sortDescending": ": 내림차순으로 정렬"
             }
+        }
 
-        });
-    }
+    });
+
     fnEventBind();
 }
 function fnInputModalEventBind(){
@@ -159,10 +161,7 @@ function fnInputModalEventBind(){
         }
         fnCalculateFee();
     });
-    //날짜 디폴트 : 오늘
-    var d=new Date();
-    $("#inputDate").val(moment(d).format("YYYY-MM-DD"));
-    $("#inputTime").val(moment(d).format("HH:mm"));
+    
     //저장
     $("#btnSaveSales").off().on('click',function(){
         fnCheckSaveSales();
@@ -235,7 +234,7 @@ function fnMakeSales(){
     const customerTypeRadio=$("#formSelectUser [id^=radio]:checked").attr('id');
     if(customerTypeRadio=="radioUser"){
         const option=$("#selectCustomerList option:checked");
-        sale.customerInfo.id=option.data('customerid');
+        sale.customerInfo._id=option.data('customerid');
         sale.customerInfo.name=option.data('customername');
         sale.customerInfo.phone=option.data('customerphone');
     }else{
@@ -244,7 +243,7 @@ function fnMakeSales(){
     const productType=$("#formSelectProduct [id^=radio]:checked").attr('id');
     if(productType=="radioProduct"){
         const option=$("#selectProductList option:checked");
-        sale.productInfo.id=option.data('productid');
+        sale.productInfo._id=option.data('productid');
         sale.productInfo.name=option.data('productname');
     }
     sale.price=$("#inputPrice").val();
@@ -265,8 +264,8 @@ function fnMakeSales(){
     sale.memo=$("#inputSalesMemo").val();
 
     fnSaveNewSales(sale);
-    if(sale.customerInfo.id!=-1 && sale.pointUse>0)
-        fnUsePoint(sale.customerInfo.id,sale.pointUse);
+    if(sale.customerInfo._id!=-1 && sale.pointUse>0)
+        fnUsePoint(sale.customerInfo._id,sale.pointUse);
     
 }
 function fnUsePoint(customerId,point){
@@ -321,12 +320,18 @@ function fnRefundPoint(customerId,point){
 
 
 function fnInitModalForm(){
-    $('.modal-body form')[0].reset(); //전체 form 리셋
-    $("#inputPrice").val("0");
-
-    $("#radioNoneUser").click();
+    $("#inputPrice, #inputDiscount, #inputPointUse, #inputPointTotal, #inputFee").val("0");
+    $("#inputSearchCustomer, #inputSearchProduct").val("");
+    $("#radioUser").click();
     $("#radioNoneDiscount").click();
-    $("#radioSelfPrice").click();
+    $("#radioProduct").click();
+    $("#selectCustomerList").empty();
+    $("#selectProductList").empty();
+    //날짜 디폴트 : 오늘
+    var d=new Date();
+    $("#inputDate").val(moment(d).format("YYYY-MM-DD"));
+    $("#inputTime").val(moment(d).format("HH:mm"));
+    $("#inputSalesMemo").val("");
 }
 function fnEventBind(){
     $("#btnNewSales").off().on('click',function(){
