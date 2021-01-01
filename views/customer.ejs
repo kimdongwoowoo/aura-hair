@@ -24,7 +24,7 @@
                             <th>주소</th>
                             <th>등급</th>
                             <th>포인트</th>
-                            
+                            <th>포인트 사용내역</th>
                         </tr>
                     </thead>
                   
@@ -53,7 +53,6 @@
                     <div class="form-group">
                         <label class="col-form-label">전화번호</label>
                         <input type="text" class="form-control" id="inputCustomerPhone">
-                        
                     </div>
                     <div class="form-group">
                         <label class="col-form-label">주소</label>
@@ -85,24 +84,7 @@
                       <textarea class="form-control" id="inputCustomerMemo"></textarea>
                     </div>
                     
-                    <div id="modalPointHistory" class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
-                      <div class="modal-dialog modal-sm">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-                            <button type="button" class="close">
-                              <span aria-hidden="true">&times;</span>
-                            </button>
-                          </div>
-                          <div class="modal-body">
-                            
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" id="btnCloseHistory" class="btn btn-secondary" >닫기</button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
+
                   </form>
                 </div>
                 <div class="modal-footer">
@@ -113,6 +95,35 @@
               </div>
             </div>
 
+        </div>
+        <div id="modalPointHistory" class="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">포인트 사용내역</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="modal-body">
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th scope="col">날짜</th>
+                      <th scope="col">제품명</th>
+                      <th scope="col">포인트</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbPointHistory">
+                   
+                  </tbody>
+                </table>
+              </div>
+              <div class="modal-footer">
+                <button type="button" id="btnCloseHistory" class="btn btn-secondary" >닫기</button>
+              </div>
+            </div>
+          </div>
         </div>
         
     </div>
@@ -130,6 +141,16 @@
         <td>{{address}}</td>
         <td>{{vip}}</td>
         <td id="tdCustomerListPoint">{{point}}</td>
+        <td><button id="btnPointHistory" type="button" class="btn btn-info">조회</button></td>
      </tr>
      {{/customerList}}
+</script>
+<script id="tbPointHistory-template" type="text/x-handlebars-template">
+    {{#historyList}}
+    <tr>
+        <td>{{createdAt}}</td>
+        <td>{{product}}</td>
+        <td>{{point}}</td>
+     </tr>
+     {{/historyList}}
 </script>

@@ -234,6 +234,10 @@ function fnMakeSales(){
     const customerTypeRadio=$("#formSelectUser [id^=radio]:checked").attr('id');
     if(customerTypeRadio=="radioUser"){
         const option=$("#selectCustomerList option:checked");
+        if(option.length==0){
+            alert('회원을 선택하세요');
+            return;
+        }
         sale.customerInfo._id=option.data('customerid');
         sale.customerInfo.name=option.data('customername');
         sale.customerInfo.phone=option.data('customerphone');
@@ -243,6 +247,10 @@ function fnMakeSales(){
     const productType=$("#formSelectProduct [id^=radio]:checked").attr('id');
     if(productType=="radioProduct"){
         const option=$("#selectProductList option:checked");
+        if(option.length==0){
+            alert('제품을 선택하세요');
+            return;
+        }
         sale.productInfo._id=option.data('productid');
         sale.productInfo.name=option.data('productname');
     }

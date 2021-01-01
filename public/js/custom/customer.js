@@ -140,14 +140,53 @@ function fnEventBind(){
     //포인트 상세내역 닫기
     $("#btnCloseHistory").off().on('click',function(){
         $("#modalPointHistory").modal('hide');
-        $("#modalCustomer").modal({focus:true});
-    });
-    $("#inputCustomerPoint").off().on('dblclick',function(){
-        $("#modalCustomer").modal({focus:false});
-        $("#modalPointHistory").modal({keyboard:false});
-        $("#modalPointHistory").modal('show');
     });
 
+    //포인트내역 조회
+    $("[id=btnPointHistory]").off().on('click',function(){
+        var customerId=$(this).closest('tr').attr('customerId');
+        fnGetPointHistory(customerId);
+        
+        
+    });
+    
+
+}
+function fnGetPointHistory(customerId){
+    $.ajax({ 
+        url: "/api/sales",
+        method: "GET",   
+        dataType:"json",
+        data:{
+            keyword:customerId
+        },    
+        success:success,
+        fail:fail
+    });
+    function success(data){
+        $("#tbPointHistory").empty();
+        var historyList;
+        for(var i=0;i<data.length;++i){
+            
+            if(data[i].pointUse!=0){
+                history.createdAt=moment(data[i].createdAt).format("YYYY-MM-DD HH:mm");//로컬시간 적용 필요
+                if(data[i].productInfo._id!=-1){
+
+                }
+            }
+        }
+        var renderData={
+            historyList:historyList
+        }
+        var source=$("#tbPointHistory-template").html();
+        var template=Handlebars.compile(source);
+        var html=template(renderData);
+        $("#tbPointHistory").html(html);
+        $("#modalPointHistory").modal('show');
+    }
+    function fail(err){
+    
+    }
 }
 function fnDeleteCustomer(customerId){
     $.ajax({ 

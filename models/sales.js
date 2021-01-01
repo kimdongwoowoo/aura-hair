@@ -32,10 +32,14 @@ salesSchema.statics.create = function (payload) {
 };
 
 // Find All
-salesSchema.statics.findAll = function () {
+salesSchema.statics.findAll = function (keyword) {
   // return promise
   // V4부터 exec() 필요없음
-  return this.find({});
+  if(keyword){
+    return this.find({"customerInfo._id":keyword});
+  }else{
+    return this.find({});
+  }
 };
 
 // Find One by sales id
