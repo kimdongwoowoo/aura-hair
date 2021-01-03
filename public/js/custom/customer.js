@@ -57,7 +57,9 @@ function fnRenderCustomerList(data){
                 "sortAscending": ": 오름차순으로 정렬",
                 "sortDescending": ": 내림차순으로 정렬"
             }
-        }
+        },
+        "drawCallback":fnTableEventBind,
+        "pageLength": 50
 
     });
 
@@ -125,12 +127,7 @@ function fnEventBind(){
         }
     });
 
-    //header, footer를 제외, customerId를 포함한 row
-    $("tr[customerId]").off().on('dblclick',function(){
-        $("#btnDelCustomer").show();
-        var id=$(this).attr('customerId');
-        fnPopupModalCustomer(id);
-    });
+    
     $("#btnDelCustomer").off().on('click',function(){
         var res=confirm('삭제하시겠습니까?');
         if(res){
@@ -139,20 +136,28 @@ function fnEventBind(){
     });
     //포인트 상세내역 닫기
     $("#btnCloseHistory").off().on('click',function(){
-        $("#modalPointHistory").modal('hide');
+        $("#modalCustomerHistory").modal('hide');
     });
 
     //포인트내역 조회
-    $("[id=btnPointHistory]").off().on('click',function(){
-        var customerId=$(this).closest('tr').attr('customerId');
-        fnGetPointHistory(customerId);
-        
-        
+    $("[id=btnCustomerHistory]").off().on('click',function(){
+       var customerId=$(this).attr('customerid');
+        fnGetCustomerHistory(customerId);
     });
-    
-
 }
-function fnGetPointHistory(customerId){
+
+
+function fnTableEventBind(){
+    //header, footer를 제외, customerId를 포함한 row
+    $("tr[customerId]").off().on('dblclick',function(){
+        $("#btnDelCustomer").show();
+        var id=$(this).attr('customerId');
+        fnPopupModalCustomer(id);
+    });
+}
+
+
+function fnGetCustomerHistory(customerId){
     $.ajax({ 
         url: "/api/sales",
         method: "GET",   
@@ -164,25 +169,31 @@ function fnGetPointHistory(customerId){
         fail:fail
     });
     function success(data){
-        $("#tbPointHistory").empty();
-        var historyList;
+        $("#tbCustomerHistory").empty();
+        var historyList=[];
         for(var i=0;i<data.length;++i){
-            
-            if(data[i].pointUse!=0){
-                history.createdAt=moment(data[i].createdAt).format("YYYY-MM-DD HH:mm");//로컬시간 적용 필요
-                if(data[i].productInfo._id!=-1){
-
-                }
+            var history={};
+            history.createdAt=moment(data[i].createdAt).format("YYYY-MM-DD / HH:mm");//로컬시간 적용 필요
+            if(data[i].productInfo._id!=-1){
+                history.product=data[i].productInfo.name;
+            }else{
+                history.product="없음"
             }
+            if(data[i].pointUse!=0){
+                history.point='-￦'+$.number(data[i].pointUse,0,',');
+            }else{
+                history.point="0";
+            }
+            historyList.push(history);
         }
         var renderData={
             historyList:historyList
         }
-        var source=$("#tbPointHistory-template").html();
+        var source=$("#tbCustomerHistory-template").html();
         var template=Handlebars.compile(source);
         var html=template(renderData);
-        $("#tbPointHistory").html(html);
-        $("#modalPointHistory").modal('show');
+        $("#tbCustomerHistory").html(html);
+        $("#modalCustomerHistory").modal('show');
     }
     function fail(err){
     

@@ -60,10 +60,12 @@ function fnRenderSalesList(data){
                 "sortAscending": ": 오름차순으로 정렬",
                 "sortDescending": ": 내림차순으로 정렬"
             }
-        }
+        },
+        "drawCallback":fnTableEventBind,
+        "pageLength": 50,
+        "order": [[ 3, "desc" ]]
 
     });
-
     fnEventBind();
 }
 function fnInputModalEventBind(){
@@ -272,8 +274,7 @@ function fnMakeSales(){
     sale.memo=$("#inputSalesMemo").val();
 
     fnSaveNewSales(sale);
-    if(sale.customerInfo._id!=-1 && sale.pointUse>0)
-        fnUsePoint(sale.customerInfo._id,sale.pointUse);
+   
     
 }
 function fnUsePoint(customerId,point){
@@ -351,15 +352,7 @@ function fnEventBind(){
         
     });
     
-    //header, footer를 제외, salesId를 포함한 row
-    $("tr[salesId]").off().on('dblclick',function(){
-        const salesId=$(this).attr('salesId');
-        $("#modalReceipt").attr('salesId',salesId);
-        const customerId=$(this).data('customerid');
-        $("#modalReceipt").attr('customerId',customerId);
-        fnPopupModalSales(salesId);
-        
-    });
+
     $("#btnDelSales").off().on('click',function(){
         if(confirm("삭제하시겠습니까?")){
             if($("#modalReceipt").attr('customerId')!=-1 && $("#tdPoint").data('point')>0){
@@ -377,7 +370,18 @@ function fnEventBind(){
 
 
 }
+function fnTableEventBind(){
 
+    //header, footer를 제외, salesId를 포함한 row
+    $("tr[salesId]").off().on('dblclick',function(){
+        const salesId=$(this).attr('salesId');
+        $("#modalReceipt").attr('salesId',salesId);
+        const customerId=$(this).data('customerid');
+        $("#modalReceipt").attr('customerId',customerId);
+        fnPopupModalSales(salesId);
+        
+    });
+}
 function fnSearchCustomer(keyword){
     $.ajax({ 
         url: "/api/customer",
@@ -575,6 +579,8 @@ function fnSaveNewSales(sales){
         fail:fail
     });
     function success(data){
+        if(data.customerInfo._id!=-1 && data.pointUse>0)
+        fnUsePoint(data.customerInfo._id,data.pointUse);
         $("#modalSales").modal('hide');
         fnGetAllSalesList();
     }

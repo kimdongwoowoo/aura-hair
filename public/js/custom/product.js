@@ -57,10 +57,12 @@ function fnRenderProductList(data){
             "aria": {
                 "sortAscending": ": 오름차순으로 정렬",
                 "sortDescending": ": 내림차순으로 정렬"
-            },
-            "iDisplayLength": 50
+            }
+
             
-        }
+        },
+        "drawCallback":fnTableEventBind,
+        "pageLength": 50
 
     });
     fnEventBind();
@@ -120,12 +122,6 @@ function fnEventBind(){
         }
     });
 
-    //header, footer를 제외, productId를 포함한 row
-    $("tr[productId]").off().on('dblclick',function(){
-        $("#btnDelProduct").show();
-        var id=$(this).attr('productId');
-        fnPopupModalProduct(id);
-    });
     $("#btnDelProduct").off().on('click',function(){
         var res=confirm('삭제하시겠습니까?');
         if(res){
@@ -133,6 +129,15 @@ function fnEventBind(){
         }
     });
 
+}
+
+function fnTableEventBind(){
+    //header, footer를 제외, productId를 포함한 row
+    $("tr[productId]").off().on('dblclick',function(){
+        $("#btnDelProduct").show();
+        var id=$(this).attr('productId');
+        fnPopupModalProduct(id);
+    });
 }
 function fnDeleteProduct(productId){
     $.ajax({ 

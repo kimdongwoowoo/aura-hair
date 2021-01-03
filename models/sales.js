@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 // Define Schemes
 const salesSchema = new mongoose.Schema({
   customerInfo:{
-    _id:{type:String,},
-    name:{type:String},
-    phone:{type:String}
+    _id:{type:String,default:-1},
+    name:{type:String,default:""},
+    phone:{type:String,phont:""}
   },
   productInfo:{
-    _id:{type:String},
-    name:{type:String}
+    _id:{type:String,default:-1},
+    name:{type:String,default:""}
   },
   price:{type:Number,required:true},
   discountType:{type:Number,required:true},

@@ -24,7 +24,7 @@
                             <th>주소</th>
                             <th>등급</th>
                             <th>포인트</th>
-                            <th>포인트 사용내역</th>
+                            <th>방문기록</th>
                         </tr>
                     </thead>
                   
@@ -96,7 +96,7 @@
             </div>
 
         </div>
-        <div id="modalPointHistory" class="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+        <div id="modalCustomerHistory" class="modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header">
@@ -114,7 +114,7 @@
                       <th scope="col">포인트</th>
                     </tr>
                   </thead>
-                  <tbody id="tbPointHistory">
+                  <tbody id="tbCustomerHistory">
                    
                   </tbody>
                 </table>
@@ -141,11 +141,11 @@
         <td>{{address}}</td>
         <td>{{vip}}</td>
         <td id="tdCustomerListPoint">{{point}}</td>
-        <td><button id="btnPointHistory" type="button" class="btn btn-info">조회</button></td>
-     </tr>
-     {{/customerList}}
+        <td><button id="btnCustomerHistory" type="button" class="btn btn-info" customerId="{{_id}}">조회</button></td>
+    </tr>
+    {{/customerList}}
 </script>
-<script id="tbPointHistory-template" type="text/x-handlebars-template">
+<script id="tbCustomerHistory-template" type="text/x-handlebars-template">
     {{#historyList}}
     <tr>
         <td>{{createdAt}}</td>
