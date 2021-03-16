@@ -44,6 +44,16 @@ function sidebarEventBind(){
             }    
         });
     });
+    $("#sidebar_sales_graph").click(function(){
+        $.ajax({ 
+            type: 'post' , 
+            url: '/sales_graph' , 
+            success: function(data) { 
+                $("#content").html(data); 
+            }    
+        });
+    });
+    
     $("#aMain").click(function(){
         $("#sidebar_sales").click();
     })

@@ -84,12 +84,22 @@ router.delete("/:id",(req,res)=>{
 });
 */
 router.get('/', (req, res) => {
-  Sales.findAll(req.query.keyword)
+  console.log(req.query.start,req.query.end);
+  if(req.query.start && req.query.end){
+    Sales.getSalesTotal(req.query.start,req.query.end)
     .then((sales) => {
       if (!sales.length) return res.send([]);
       res.send(sales);
     })
     .catch(err => res.status(500).send(err));
+  }else{
+    Sales.findAll()
+      .then((sales) => {
+        if (!sales.length) return res.send([]);
+        res.send(sales);
+      })
+      .catch(err => res.status(500).send(err));
+  }
 });
 
 // Find One by id
@@ -108,7 +118,6 @@ router.post('/', (req, res) => {
     .then(sales => res.send(sales))
     .catch(err => res.status(500).send(err));
 });
-
 // Update by id
 router.put('/:id', (req, res) => {
   Sales.updateById(req.params.id, req.body)

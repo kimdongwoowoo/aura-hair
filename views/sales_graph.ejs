@@ -1,0 +1,65 @@
+
+<script src="js/custom/sales_graph.js"></script>
+
+<!-- Begin Page Content -->
+ <div class="container-fluid">
+
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">매출</h6>
+        </div>
+        <div class="card-body border-bottom">
+          <div class="form-row">
+
+                <input type="date" id="inputStart"class="form-control col-2">
+                <label class="m-2">~</label>
+                <input type="date" id="inputEnd" class="form-control col-2">
+                <!--여백-->
+                <label class="m-2"></label>
+                <button type="button" id="btnGetMoney" class="btn btn-primary col-1">조회</button>
+
+                <label class="m-2" id="labelTotalSales"></label>
+                <label class="m-2" id="labelDailySales"></label>
+          </div>
+
+          
+        </div>
+
+        <div class="card-body">
+            <div class="table-responsive table-hover">
+                <table class="table table-bordered" id="tbSalesGraph" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>날짜</th>
+                            <th>매출</th>
+                            <th>시술 건수</th>
+                        </tr>
+                    </thead>
+                  
+                    <tbody id="tbSalesGraphBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<!-- /.container-fluid -->
+
+<script id="tbSalesGraph-template" type="text/x-handlebars-template">
+    {{#tbSalesGraphList}}
+    <tr>
+        <td style="width: 15%">{{_id}}</td>
+        <td style="width: 70%">
+          <div class="progress">
+            <div class="progress-bar" role="progressbar" style="width: {{value}}%" aria-valuenow="{{value}}" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          [{{totalSaleAmount}}원]
+        </td>
+        <td style="width: 15%">{{count}}</td>
+    </tr>
+    {{/tbSalesGraphList}}
+</script>

@@ -33,14 +33,27 @@ salesSchema.statics.create = function (payload) {
 
 // Find All
 salesSchema.statics.findAll = function (keyword) {
-  // return promise
-  // V4부터 exec() 필요없음
-  if(keyword){
-    return this.find({"customerInfo._id":keyword});
-  }else{
+
     return this.find({});
-  }
+
 };
+// Find By start,end date
+salesSchema.statics.getSalesTotal = function (start,end) {
+  return this.aggregate(
+    [ 
+      { $match : { date : {$gte:start,$lte:end} } } ,
+      { $group: {
+         _id: "$date", 
+         totalSaleAmount: { $sum: "$fee" },
+         count: {$sum:1} 
+        }
+      },
+      { $sort : {totalSaleAmount:1}}
+      
+    ]
+  );
+};
+
 
 // Find One by sales id
 salesSchema.statics.findOneById = function (_id) {
