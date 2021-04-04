@@ -44,11 +44,11 @@ salesSchema.statics.getSalesTotal = function (start,end) {
       { $match : { date : {$gte:start,$lte:end} } } ,
       { $group: {
          _id: "$date", 
-         totalSaleAmount: { $sum: { $sum: [ "$fee", "$pointUse" ] }},
+         totalSaleAmount: { $sum:  {$add: ["$fee", "$pointUse"]  }},
          count: {$sum:1} 
         }
       },
-      { $sort : {date:1}}
+      { $sort : {_id:1}}
       
     ]
   );
